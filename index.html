@@ -1,0 +1,1203 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07080C"><meta name="description" content="FitMirror: see your future body, train every muscle, eat for your goal."><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style></head><body><title>FitMirror</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one phone-width column over a dark aurora backdrop; glass panels, a floating pill tab bar, 3D stages as heroes. */
+:root{
+  color-scheme:dark;
+  --bg:#07080C; --bg-2:#0E1017; --glass:rgba(255,255,255,.055); --glass-2:rgba(255,255,255,.09); --stroke:rgba(255,255,255,.09); --stroke-2:rgba(255,255,255,.16);
+  --ink:#F5F6F8; --muted:#8C93A3; --dim:#5D6373;
+  --ember:#FF5B2E; --flare:#FF2E7E; --ice:#56C8FF; --mint:#38F2A8; --sun:#FFC83D;
+  --grad:linear-gradient(120deg,#FF7A2E 0%,#FF2E7E 100%);
+  --grad-cool:linear-gradient(120deg,#56C8FF 0%,#7B6CFF 100%);
+  --display:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-user-select:none;user-select:none}
+:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.38}
+.aurora i:nth-child(1){width:420px;height:420px;background:#FF4D2E;top:-180px;right:-160px;animation:drift 18s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:380px;height:380px;background:#5B3BFF;bottom:-160px;left:-180px;opacity:.3;animation:drift 22s ease-in-out infinite alternate-reverse}
+.aurora i:nth-child(3){width:260px;height:260px;background:#FF2E7E;top:40%;left:60%;opacity:.16;animation:drift 26s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(-60px,50px) scale(1.15)}}
+.app{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-inline:16px;padding-block:8px 120px;min-height:100%}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:-.025em;line-height:1.05}
+h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.015em}
+h3{font-size:15px;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.eyebrow{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.num{font-family:var(--display);font-variant-numeric:tabular-nums}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.glass{background:var(--glass);border:1px solid var(--stroke);border-radius:26px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.pad{padding:18px}
+.screen{display:flex;flex-direction:column;gap:18px;animation:rise .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:.4;transform:translateY(10px)}}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-inline:4px}
+.linkbtn{background:none;border:0;color:var(--ice);font-weight:700;font-size:13px;padding:6px 2px}
+.btn{border:0;border-radius:18px;padding:16px 18px;font-weight:800;font-size:15.5px;background:var(--grad);color:#fff;box-shadow:0 10px 30px -10px rgba(255,60,90,.7);transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--glass-2);box-shadow:none;border:1px solid var(--stroke)}
+.btn:disabled{opacity:.45;box-shadow:none}
+.chip{border:1px solid var(--stroke);background:var(--glass);border-radius:999px;padding:9px 14px;font-size:13.5px;font-weight:700;white-space:nowrap;color:var(--ink);transition:background .2s,border-color .2s}
+.chip[aria-pressed="true"]{background:#fff;color:#0A0B10;border-color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
+.chips::-webkit-scrollbar{display:none}
+.wrapchips{display:flex;flex-wrap:wrap;gap:8px}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:8px 2px}
+.me{display:flex;align-items:center;gap:12px;min-width:0;background:none;border:0;padding:0;text-align:left}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:18px;color:#fff;flex:none;box-shadow:0 0 0 3px rgba(255,255,255,.08)}
+.me .who{min-width:0}
+.me .who b{display:block;font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me .who span{font-size:12.5px;color:var(--muted)}
+.flame{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:rgba(255,91,46,.14);border:1px solid rgba(255,91,46,.35);font-weight:800;font-family:var(--display);font-size:16px}
+.flame svg{width:18px;height:18px}
+.setup{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:22px;background:linear-gradient(120deg,rgba(255,122,46,.18),rgba(255,46,126,.14));border:1px solid rgba(255,90,80,.35)}
+.setup p{flex:1;font-size:13.5px}
+.setup .btn{padding:10px 14px;font-size:13.5px;border-radius:14px}
+
+/* mirror */
+.mirror{position:relative;overflow:hidden;padding:0}
+.mirror .head{padding:18px 18px 0;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.stage3d{position:relative;height:420px;touch-action:pan-y}
+.stage3d canvas{display:block;width:100%;height:100%}
+.tag{position:absolute;top:10px;padding:6px 11px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.tag.l{left:14px;background:rgba(140,147,163,.16);border:1px solid rgba(140,147,163,.3);color:#C4C9D4}
+.tag.r{right:14px;background:rgba(255,46,126,.16);border:1px solid rgba(255,46,126,.45);color:#FF9DBF}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px}
+.loading i{width:34px;height:34px;border-radius:50%;border:3px solid var(--stroke-2);border-top-color:var(--flare);animation:spin 1s linear infinite;display:block;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;border-radius:16px;background:rgba(0,0,0,.35);border:1px solid var(--stroke)}
+.seg button{border:0;background:none;border-radius:12px;padding:9px 4px;font-weight:800;font-size:13px;color:var(--muted);transition:all .2s}
+.seg button[aria-pressed="true"]{background:#fff;color:#0A0B10}
+.controls{padding:0 18px 18px;display:flex;flex-direction:column;gap:14px}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.stepper .ctl{display:flex;align-items:center;gap:6px}
+.stepper button{width:38px;height:38px;border-radius:12px;border:1px solid var(--stroke);background:var(--glass-2);font-size:20px;font-weight:700;line-height:1}
+.stepper .v{min-width:72px;text-align:center;font-family:var(--display);font-weight:800;font-size:18px}
+.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cmp{background:rgba(0,0,0,.28);border:1px solid var(--stroke);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cmp .k{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.cmp .pair{display:flex;flex-direction:column;gap:2px;font-family:var(--display);font-variant-numeric:tabular-nums}
+.cmp .pair span{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+.cmp .pair b{font-size:17px;display:flex;justify-content:space-between;align-items:baseline}
+.cmp .pair b em{font-style:normal;font-size:11px;font-family:var(--body);color:var(--flare);font-weight:800}
+.cmp .pair span em{font-style:normal;font-size:11px;font-family:var(--body)}
+.verdict{font-size:14px;line-height:1.5;padding:14px;border-radius:16px;background:linear-gradient(120deg,rgba(56,242,168,.1),rgba(86,200,255,.08));border:1px solid rgba(56,242,168,.25)}
+.verdict b{color:var(--mint)}
+
+/* rings */
+.rings{display:flex;gap:18px;align-items:center}
+.rings svg{width:132px;height:132px;flex:none}
+.legend{display:flex;flex-direction:column;gap:12px;min-width:0;flex:1}
+.legend div{display:flex;flex-direction:column}
+.legend span{font-size:12px;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:6px}
+.legend span i{width:8px;height:8px;border-radius:50%}
+.legend b{font-family:var(--display);font-size:20px;font-weight:800}
+.legend b small{font-size:13px;color:var(--muted);font-weight:600}
+
+/* workout */
+.wo{position:relative;overflow:hidden;border-radius:28px;padding:20px;background:radial-gradient(120% 90% at 100% 0%,rgba(255,91,46,.55),transparent 60%),radial-gradient(90% 80% at 0% 100%,rgba(123,108,255,.45),transparent 60%),#12131B;border:1px solid var(--stroke-2)}
+.wo h2{font-size:26px;font-weight:800;margin-top:6px}
+.wo .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{font-size:12px;font-weight:800;border-radius:999px;padding:6px 10px;background:rgba(255,255,255,.12);white-space:nowrap}
+.moves{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.move{display:flex;align-items:center;gap:12px;padding:10px;border-radius:16px;background:rgba(0,0,0,.28);border:1px solid var(--stroke)}
+.move .n{width:34px;height:34px;flex:none;border-radius:11px;display:grid;place-items:center;font-family:var(--display);font-weight:800;background:rgba(255,255,255,.1)}
+.move.done .n{background:var(--mint);color:#06281B}
+.move .t{flex:1;min-width:0}
+.move .t b{display:block;font-size:14.5px}
+.move .t span{font-size:12.5px;color:var(--muted)}
+.move .how{border:0;background:none;color:var(--ice);font-weight:800;font-size:12.5px;padding:6px}
+.wo .btn{width:100%;margin-top:16px}
+
+.hscroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;scroll-snap-type:x mandatory}
+.hscroll::-webkit-scrollbar{display:none}
+.badge{flex:none;width:112px;scroll-snap-align:start;padding:14px 12px;border-radius:22px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.badge i{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-style:normal;font-family:var(--display);font-weight:800;font-size:16px;background:rgba(255,255,255,.06);color:var(--dim);border:1px dashed var(--stroke-2)}
+.badge.got i{background:var(--grad);color:#fff;border:0;box-shadow:0 8px 24px -8px rgba(255,46,126,.8)}
+.badge b{font-size:13px;line-height:1.25}
+.badge span{font-size:11.5px;color:var(--muted)}
+.challenge{display:flex;gap:14px;align-items:center}
+.challenge svg{width:62px;height:62px;flex:none}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-weight:800}
+.day i{width:100%;max-width:38px;aspect-ratio:1;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--stroke);display:grid;place-items:center;font-style:normal}
+.day.done i{background:var(--grad);border:0;color:#fff}
+.day.today i{border:1.5px solid #fff}
+
+/* map */
+.mapstage{position:relative;height:min(62vh,540px);min-height:420px;border-radius:30px;overflow:hidden;background:radial-gradient(70% 60% at 50% 40%,rgba(123,108,255,.22),transparent 70%),radial-gradient(60% 40% at 50% 100%,rgba(255,91,46,.18),transparent 70%),#0B0C12;border:1px solid var(--stroke);touch-action:pan-y}
+.mapstage canvas{display:block;width:100%;height:100%}
+.mapstage .sel{position:absolute;left:18px;top:16px;pointer-events:none}
+.mapstage .sel b{display:block;font-family:var(--display);font-size:28px;font-weight:800;letter-spacing:-.02em}
+.mapstage .sel span{font-size:12.5px;color:var(--muted)}
+.mapstage .tools{position:absolute;right:12px;bottom:12px;display:flex;gap:8px}
+.mapstage .hint{position:absolute;left:16px;bottom:16px;font-size:12px;color:var(--muted);pointer-events:none;display:flex;align-items:center;gap:6px}
+.mapstage .hint i{width:8px;height:8px;border-radius:50%;background:var(--flare);box-shadow:0 0 0 0 rgba(255,46,126,.6);animation:ping 1.8s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 10px rgba(255,46,126,0)}100%{box-shadow:0 0 0 0 rgba(255,46,126,0)}}
+.roundbtn{height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--stroke-2);background:rgba(10,11,16,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.ex{border-top:1px solid var(--stroke);padding-block:14px}
+.ex:first-child{border-top:0;padding-top:4px}
+.ex summary{list-style:none;display:flex;align-items:center;gap:12px;cursor:pointer}
+.ex summary::-webkit-details-marker{display:none}
+.ex .ico{width:48px;height:48px;flex:none;border-radius:16px;display:grid;place-items:center;font-family:var(--display);font-size:15px;font-weight:800;color:#fff}
+.ex .meta{flex:1;min-width:0}
+.ex .meta b{display:block;font-size:15px}
+.ex .meta span{font-size:12.5px;color:var(--muted)}
+.ex .eq{font-size:11px;font-weight:800;border-radius:999px;padding:4px 9px;background:rgba(255,255,255,.08);color:var(--muted);white-space:nowrap}
+.ex ol{margin:12px 0 8px;padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#D9DCE3}
+.ex .tip{font-size:13px;background:rgba(255,200,61,.1);border:1px solid rgba(255,200,61,.25);border-radius:14px;padding:10px 12px}
+.ex .tip b{color:var(--sun)}
+.ex .add{margin-top:10px;width:100%;padding:12px;font-size:14px}
+
+/* diet */
+.kring{display:flex;gap:18px;align-items:center}
+.kring svg{width:150px;height:150px;flex:none}
+.kring .c{position:relative;width:150px;height:150px;flex:none}
+.kring .c .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.kring .c .mid b{font-family:var(--display);font-size:30px;font-weight:800;line-height:1}
+.kring .c .mid span{font-size:11.5px;color:var(--muted);font-weight:700}
+.macro{display:flex;flex-direction:column;gap:2px}
+.macro span{font-size:12px;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:6px}
+.macro span i{width:8px;height:8px;border-radius:50%}
+.macro b{font-family:var(--display);font-size:20px;font-weight:800}
+.macro b small{font-size:12px;color:var(--muted);font-weight:600}
+.water{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:12px}
+.water button{aspect-ratio:3/4;border-radius:8px 8px 10px 10px;border:1px solid rgba(86,200,255,.35);background:rgba(86,200,255,.05);padding:0;position:relative;overflow:hidden}
+.water button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(180deg,#7FD8FF,#3E8BFF);transition:height .3s}
+.water button[aria-pressed="true"]::after{height:78%}
+.meal{display:flex;gap:14px;align-items:center;padding-block:12px;border-top:1px solid var(--stroke)}
+.meal:first-child{border-top:0;padding-top:2px}
+.meal .t-ico{width:48px;height:48px;border-radius:16px;flex:none;display:grid;place-items:center}
+.meal .t-ico svg{width:24px;height:24px}
+.meal .body{flex:1;min-width:0}
+.meal .body .eyebrow{font-size:10px}
+.meal .body b{display:block;font-size:14.5px;margin-top:2px}
+.meal .body span{font-size:12.5px;color:var(--muted)}
+.swap{width:38px;height:38px;flex:none;border-radius:12px;border:1px solid var(--stroke);background:var(--glass-2);display:grid;place-items:center}
+.swap svg{width:18px;height:18px}
+.tips{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.tips li{display:flex;gap:10px}
+.tips li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--grad);flex:none;margin-top:8px}
+details.how summary{cursor:pointer;font-weight:800;font-size:14px;color:var(--ice);list-style:none}
+details.how p{margin-top:10px;font-size:13px;color:var(--muted)}
+
+/* coach */
+.orb{width:64px;height:64px;border-radius:50%;background:conic-gradient(from 0deg,#FF7A2E,#FF2E7E,#7B6CFF,#56C8FF,#FF7A2E);filter:saturate(1.2);animation:spin 8s linear infinite;box-shadow:0 0 40px -6px rgba(255,46,126,.7);position:relative}
+.orb::after{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2A2C3A,#0B0C12 70%)}
+.chat{display:flex;flex-direction:column;gap:10px;min-height:160px}
+.msg{max-width:86%;padding:12px 14px;border-radius:20px;font-size:14.5px;white-space:pre-wrap;overflow-wrap:anywhere;animation:rise .3s ease-out}
+.msg.me{align-self:flex-end;background:var(--grad);color:#fff;border-bottom-right-radius:6px}
+.msg.ai{align-self:flex-start;background:var(--glass-2);border:1px solid var(--stroke);border-bottom-left-radius:6px}
+.msg.ai.thinking{color:var(--muted)}
+.composer{position:sticky;bottom:calc(92px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;padding:6px;border-radius:22px;background:rgba(20,21,30,.85);border:1px solid var(--stroke-2);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.composer input{flex:1;min-width:0;border:0;background:none;padding:10px 12px;outline:none}
+.composer .btn{padding:10px 16px;border-radius:16px;font-size:14px}
+.coachnote{font-size:12.5px;color:var(--muted)}
+
+/* tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:0 16px calc(14px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.tabbar nav{pointer-events:auto;max-width:420px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px;border-radius:26px;background:rgba(18,19,27,.78);border:1px solid var(--stroke-2);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);box-shadow:0 20px 50px -20px rgba(0,0,0,.9)}
+.tab{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 6px;border-radius:20px;font-size:11px;font-weight:800;color:var(--muted);transition:all .2s}
+.tab svg{width:23px;height:23px}
+.tab[aria-current="page"]{color:#fff;background:rgba(255,255,255,.1)}
+.tab[aria-current="page"] svg{stroke:url(#tabgrad)}
+
+/* sheets */
+.scrim{position:fixed;inset:0;background:rgba(3,4,8,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:40;display:flex;align-items:flex-end;justify-content:center;animation:fade .25s}
+@keyframes fade{from{opacity:0}}
+.sheet{background:#11121A;border:1px solid var(--stroke-2);border-bottom:0;width:100%;max-width:480px;border-radius:30px 30px 0 0;padding:14px 18px calc(20px + env(safe-area-inset-bottom,0px));max-height:94%;overflow-y:auto;display:flex;flex-direction:column;gap:16px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(40px);opacity:.5}}
+.grab{width:42px;height:5px;border-radius:9px;background:var(--stroke-2);margin:0 auto}
+.steps{display:flex;gap:6px}
+.steps i{flex:1;height:4px;border-radius:9px;background:var(--stroke-2)}
+.steps i.on{background:var(--grad)}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label,.field .lbl{font-size:13px;font-weight:800;color:#C9CDD6}
+.field input{border:1px solid var(--stroke-2);background:rgba(255,255,255,.04);border-radius:14px;padding:13px 14px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
+.opts button{border:1px solid var(--stroke-2);background:rgba(255,255,255,.04);border-radius:14px;padding:12px 6px;font-weight:800;font-size:13.5px}
+.opts button[aria-pressed="true"]{background:#fff;color:#0A0B10;border-color:#fff}
+.tones{display:flex;gap:10px}
+.tones button{width:40px;height:40px;border-radius:50%;border:2px solid transparent;padding:0}
+.tones button[aria-pressed="true"]{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.2)}
+
+/* player */
+.player{position:fixed;inset:0;z-index:45;background:radial-gradient(90% 60% at 100% 0%,rgba(255,91,46,.45),transparent 60%),radial-gradient(80% 60% at 0% 100%,rgba(123,108,255,.4),transparent 60%),#08090D;display:flex;flex-direction:column;padding:calc(16px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px));animation:fade .3s}
+.player .bar{display:flex;gap:5px}
+.player .bar i{flex:1;height:4px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden}
+.player .bar i.on{background:#fff}
+.player .bar i.cur{background:linear-gradient(90deg,#fff var(--p,0%),rgba(255,255,255,.15) var(--p,0%))}
+.player .mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;max-width:480px;width:100%;margin:0 auto}
+.player h2{font-size:38px;font-weight:800;line-height:1.02;letter-spacing:-.025em}
+.player .big{font-family:var(--display);font-size:20px;font-weight:700}
+.player ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;color:#D9DCE3}
+.player .timer{position:relative;width:220px;height:220px;margin:0 auto}
+.player .timer svg{width:100%;height:100%;transform:rotate(-90deg)}
+.player .timer b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-size:64px;font-weight:800}
+.player .acts{display:flex;flex-direction:column;gap:10px;max-width:480px;width:100%;margin:0 auto}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(104px + env(safe-area-inset-bottom,0px));z-index:60;background:#fff;color:#0A0B10;padding:12px 18px;border-radius:16px;font-weight:800;font-size:14px;box-shadow:0 14px 40px rgba(0,0,0,.5);max-width:calc(100% - 32px);text-align:center;animation:up .3s}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:70}
+.disclaimer{font-size:11.5px;color:var(--dim);text-align:center}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="tabgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A2E"/><stop offset="1" stop-color="#FF2E7E"/></linearGradient>
+  <linearGradient id="g-ember" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A2E"/><stop offset="1" stop-color="#FF2E7E"/></linearGradient>
+  <linearGradient id="g-ice" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#56C8FF"/><stop offset="1" stop-color="#7B6CFF"/></linearGradient>
+  <linearGradient id="g-mint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38F2A8"/><stop offset="1" stop-color="#B8F23A"/></linearGradient>
+</defs></svg>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<div class="app">
+  <header class="top">
+    <button class="me" type="button" id="meBtn" aria-label="Edit profile">
+      <span class="avatar" id="avatar">F</span>
+      <span class="who"><b id="helloTitle">Good morning</b><span id="dateLabel"></span></span>
+    </button>
+    <span class="flame" title="Day streak"><svg viewBox="0 0 24 24" fill="url(#g-ember)" aria-hidden="true"><path d="M12 2c1 3.5-1.5 5-1.5 7.5 0 1.4 1 2.5 2.3 2.5 1.6 0 2.4-1.3 2.2-3.2C17.3 10.4 19 13 19 15.5 19 19.1 15.9 22 12 22s-7-2.9-7-6.5C5 10.4 10.4 7.6 12 2z"/></svg><span id="streakV">0</span></span>
+  </header>
+
+  <!-- HOME -->
+  <section class="screen" id="scr-home" data-screen>
+    <div class="setup" id="exampleBanner" hidden>
+      <p>This is an <b>example body</b>. Add your details to see your own future self.</p>
+      <button class="btn" type="button" id="setupBtn">Set up</button>
+    </div>
+
+    <div class="glass mirror">
+      <div class="head">
+        <div><span class="eyebrow">Your future mirror</span><h2 style="margin-top:4px" id="mirrorTitle">You in 6 months</h2></div>
+        <span class="pill" style="background:rgba(255,255,255,.08)">Estimate</span>
+      </div>
+      <div class="stage3d" id="mirrorStage">
+        <span class="tag l">If you stop</span><span class="tag r">If you train</span>
+        <div class="loading" id="mirrorLoading"><div><i></i>Building your body…</div></div>
+      </div>
+      <div class="controls">
+        <div class="seg" id="monthsSeg" role="group" aria-label="Time from today">
+          <button type="button" data-m="1">1M</button><button type="button" data-m="3">3M</button><button type="button" data-m="6" aria-pressed="true">6M</button><button type="button" data-m="12">1Y</button><button type="button" data-m="24">2Y</button>
+        </div>
+        <div class="stepper"><span class="small" style="font-weight:800">Workouts per week</span>
+          <div class="ctl"><button type="button" id="dMinus" aria-label="Fewer workouts">−</button><span class="v" id="daysV">3×</span><button type="button" id="dPlus" aria-label="More workouts">+</button></div></div>
+        <div class="compare" id="compare"></div>
+        <p class="verdict" id="verdict"></p>
+      </div>
+    </div>
+
+    <div class="wo">
+      <span class="eyebrow" style="color:#FFD7C7">Today's workout</span>
+      <h2 id="planTitle">Upper body push</h2>
+      <div class="meta" id="planMeta"></div>
+      <div class="moves" id="planList"></div>
+      <button class="btn" type="button" id="startBtn">Start workout</button>
+      <div class="row between" style="margin-top:8px"><button class="linkbtn" type="button" id="shuffleBtn" style="color:#fff;opacity:.8">Shuffle moves</button><button class="linkbtn" type="button" id="quickLog" style="color:#fff;opacity:.8">Already did it? Log it</button></div>
+    </div>
+
+    <div class="glass pad">
+      <div class="rings">
+        <svg viewBox="0 0 132 132" aria-hidden="true">
+          <circle cx="66" cy="66" r="58" fill="none" stroke="rgba(255,91,46,.18)" stroke-width="12"/>
+          <circle id="ring1" cx="66" cy="66" r="58" fill="none" stroke="url(#g-ember)" stroke-width="12" stroke-linecap="round" stroke-dasharray="364.4" stroke-dashoffset="364.4" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)"/>
+          <circle cx="66" cy="66" r="43" fill="none" stroke="rgba(56,242,168,.16)" stroke-width="12"/>
+          <circle id="ring2" cx="66" cy="66" r="43" fill="none" stroke="url(#g-mint)" stroke-width="12" stroke-linecap="round" stroke-dasharray="270.2" stroke-dashoffset="270.2" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset 1s .1s cubic-bezier(.2,.8,.2,1)"/>
+          <circle cx="66" cy="66" r="28" fill="none" stroke="rgba(86,200,255,.16)" stroke-width="12"/>
+          <circle id="ring3" cx="66" cy="66" r="28" fill="none" stroke="url(#g-ice)" stroke-width="12" stroke-linecap="round" stroke-dasharray="175.9" stroke-dashoffset="175.9" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset 1s .2s cubic-bezier(.2,.8,.2,1)"/>
+        </svg>
+        <div class="legend">
+          <div><span><i style="background:#FF5B2E"></i>This week</span><b id="weekV">0<small>/3 workouts</small></b></div>
+          <div><span><i style="background:#38F2A8"></i>Streak</span><b id="streakV2">0<small> days</small></b></div>
+          <div><span><i style="background:#56C8FF"></i><span id="levelL">Level 1</span></span><b id="xpV">0<small> XP</small></b></div>
+        </div>
+      </div>
+      <div class="week" id="weekRow" style="margin-top:18px"></div>
+    </div>
+
+    <div class="glass pad challenge">
+      <svg viewBox="0 0 62 62" aria-hidden="true"><circle cx="31" cy="31" r="25" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/><circle id="chRing" cx="31" cy="31" r="25" fill="none" stroke="url(#g-ember)" stroke-width="8" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1" transform="rotate(-90 31 31)"/></svg>
+      <div style="min-width:0"><span class="eyebrow">Weekly challenge</span><h3 id="chTitle" style="margin-top:4px;font-size:16px"></h3><p class="small muted" id="chProg"></p></div>
+    </div>
+
+    <div class="section-h"><h2>Badges</h2><span class="small muted" id="badgeCount"></span></div>
+    <div class="hscroll" id="badges"></div>
+    <p class="disclaimer">Body projections are rough estimates to motivate you, not medical advice.</p>
+  </section>
+
+  <!-- MAP -->
+  <section class="screen" id="scr-map" data-screen hidden>
+    <div><span class="eyebrow">Body map</span><h1 style="margin-top:6px">Tap a muscle,<br><span class="grad-text">train it right.</span></h1></div>
+    <div class="mapstage" id="mapStage">
+      <div class="sel"><b id="pickedName">Chest</b><span id="pickedSub">7 moves</span></div>
+      <span class="hint"><i></i>Drag to spin · tap a muscle</span>
+      <div class="tools"><button class="roundbtn" type="button" id="flipBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg><span id="flipLbl">Back</span></button></div>
+      <div class="loading" id="mapLoading"><div><i></i>Loading 3D body…</div></div>
+    </div>
+    <div class="chips" id="groupChips" role="group" aria-label="Muscle groups"></div>
+    <div class="chips" id="equipChips" role="group" aria-label="Equipment"></div>
+    <div class="glass pad" id="exCard"><div id="exList"></div></div>
+  </section>
+
+  <!-- DIET -->
+  <section class="screen" id="scr-diet" data-screen hidden>
+    <div><span class="eyebrow">Diet</span><h1 style="margin-top:6px" id="dietTitle">Fuel for your goal</h1></div>
+    <div class="glass pad">
+      <div class="kring">
+        <div class="c"><svg viewBox="0 0 150 150" id="kcalRing" aria-hidden="true"></svg><div class="mid"><b class="num" id="kcalV">0</b><span>kcal / day</span></div></div>
+        <div class="legend" id="macros"></div>
+      </div>
+      <p class="small muted" id="kcalWhy" style="margin-top:14px"></p>
+    </div>
+    <div class="glass pad">
+      <div class="row between"><div><span class="eyebrow">Water today</span><h3 style="margin-top:4px" id="waterTxt"></h3></div><span class="small muted">Tap a glass</span></div>
+      <div class="water" id="water"></div>
+    </div>
+    <div class="chips" id="dietChips" role="group" aria-label="Diet type"></div>
+    <div class="section-h"><h2>Today's meals</h2><button class="linkbtn" type="button" id="newMealsBtn">New plan</button></div>
+    <div class="glass pad"><div id="meals"></div>
+      <div class="row between" style="border-top:1px solid var(--stroke);padding-top:12px;margin-top:4px;font-size:13.5px"><b>Total</b><span class="num" style="font-weight:700" id="mealTotal"></span></div></div>
+    <div class="glass pad"><h2 style="margin-bottom:12px;font-size:18px" id="tipsTitle">Tips</h2><ul class="tips" id="tips"></ul></div>
+    <div class="glass pad"><details class="how"><summary>How we worked this out</summary><p id="howTxt"></p></details></div>
+  </section>
+
+  <!-- COACH -->
+  <section class="screen" id="scr-coach" data-screen hidden>
+    <div class="row" style="gap:16px"><div class="orb" aria-hidden="true"></div><div><span class="eyebrow">AI coach</span><h1 style="margin-top:4px;font-size:26px">Ask me anything</h1></div></div>
+    <p class="muted small" style="margin-top:-6px">Workouts, food, soreness, motivation. Quick, practical answers.</p>
+    <div class="wrapchips" id="suggest"></div>
+    <div class="chat" id="chat" aria-live="polite"></div>
+    <form class="composer" id="composer">
+      <input id="ask" placeholder="Ask your coach…" autocomplete="off" aria-label="Your question">
+      <button class="btn" id="sendBtn" type="submit">Send</button>
+    </form>
+    <p class="coachnote" id="coachNote"></p>
+  </section>
+</div>
+
+<div class="tabbar">
+  <nav aria-label="Sections">
+    <button class="tab" type="button" data-tab="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+    <button class="tab" type="button" data-tab="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="2.5"/><path d="M5 9h14M12 9v6m0 0l-3 7m3-7l3 7"/></svg>Body</button>
+    <button class="tab" type="button" data-tab="diet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c-4 0-7-3.5-7-8 0-3.5 2.5-6 5.5-6 .9 0 1.5.3 1.5.3s.6-.3 1.5-.3c3 0 5.5 2.5 5.5 6 0 4.5-3 8-7 8z"/><path d="M12 7c0-2 1-3.5 3-4"/></svg>Diet</button>
+    <button class="tab" type="button" data-tab="coach"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></svg>Coach</button>
+  </nav>
+</div>
+<canvas id="confetti" hidden></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- storage (this device only) ---------- */
+const KEY = "fitmirror.v1";
+function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch { return null; } }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} }
+const EXAMPLE = { name:"", sex:"female", age:29, height:165, weight:72, activity:"sedentary", goal:"lose", days:3, diet:"any", equip:"none", tone:1 };
+const S = Object.assign({ profile:null, history:[], plans:{}, explored:[], dietPick:{}, chat:[], water:{} }, load() || {});
+const P = () => Object.assign({ tone:1 }, S.profile || EXAMPLE);
+let viewDays = P().days, viewMonths = 6;
+
+/* ---------- dates ---------- */
+const dkey = d => { const x = new Date(d); x.setMinutes(x.getMinutes() - x.getTimezoneOffset()); return x.toISOString().slice(0,10); };
+const today = () => dkey(new Date());
+function mondayOf(d){ const x = new Date(d); x.setDate(x.getDate() - (x.getDay()+6)%7); x.setHours(0,0,0,0); return x; }
+function weekKeys(){ const m = mondayOf(new Date()); return [...Array(7)].map((_,i)=>{ const x=new Date(m); x.setDate(m.getDate()+i); return dkey(x); }); }
+function streak(){ const set = new Set(S.history.map(h=>h.date)); let n = 0; const d = new Date();
+  if (!set.has(dkey(d))) d.setDate(d.getDate()-1);
+  while (set.has(dkey(d))) { n++; d.setDate(d.getDate()-1); } return n; }
+function weekNo(){ const d = new Date(), j = new Date(d.getFullYear(),0,1); return Math.floor(((d - j)/864e5 + j.getDay())/7); }
+
+/* ---------- projection ---------- */
+function baseline(p){
+  const bmi = p.weight / Math.pow(p.height/100, 2), male = p.sex === "male" ? 1 : 0;
+  const bf = clamp(1.2*bmi + 0.23*p.age - 10.8*male - 5.4, 7, 50), fat = p.weight*bf/100;
+  return { bf, fat, lean: p.weight - fat };
+}
+function project(p, months, mode, days){
+  const b = baseline(p); let fat = b.fat, lean = b.lean; const male = p.sex === "male";
+  if (mode === "stop"){ fat += 0.28*months; lean -= (p.age > 35 ? 0.07 : 0.04)*months; }
+  else {
+    const inten = Math.min(days, 6)/4, gF = {lose:1.5, fit:1, muscle:0.35}[p.goal], mF = {lose:0.7, fit:1, muscle:1.45}[p.goal];
+    const minBf = male ? 10 : 18, start = {sedentary:1, light:0.85, active:0.65}[p.activity];
+    for (let i = 0; i < months; i++){
+      const room = clamp((fat/(fat+lean)*100 - minBf)/12, 0, 1);
+      fat -= 0.45*inten*gF*room; if (p.goal === "muscle") fat += 0.05;
+      lean += 0.32*inten*mF*Math.max(0.25, 1 - i/18)*start*(male ? 1 : 0.7);
+    }
+  }
+  const weight = fat + lean;
+  return { weight, bf: fat/weight*100, lean, fat, lean0:b.lean, fat0:b.fat, bf0:b.bf };
+}
+// map a projection to the 3D body's muscle and weight sliders (0..1, 0.5 = average)
+function bodyParams(p, pr){
+  const avg = p.sex === "male" ? 19 : 28;
+  const weight = clamp(0.5 + (pr.bf - avg)/30, 0.02, 1);
+  const m0 = {sedentary:0.38, light:0.48, active:0.62}[p.activity];
+  const muscle = clamp(m0 + (pr.lean/pr.lean0 - 1)*9, 0, 1);
+  return { muscle, weight };
+}
+
+/* ---------- 3D body engine ---------- */
+if (window.THREE && THREE.ColorManagement){ THREE.ColorManagement.enabled = true; }
+const TONES = ["#F2CDB2","#E3AE8C","#C78D67","#98633F","#62402B"];
+const FABRIC = "#16171D";
+let BODY = null, bodyPromise = null;
+function loadBody(){
+  if (!bodyPromise) bodyPromise = fetch("body.txt").then(r => { if (!r.ok) throw new Error("body " + r.status); return r.text(); }).then(b64 => { const bin = atob(b64.trim()), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); const buf = u8.buffer;
+    const hl = new DataView(buf).getUint32(0, true), hdr = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 4, hl))), base = 4 + hl;
+    const n = hdr.n, T = {};
+    hdr.targets.forEach(t => T[t.name] = { d:new Int16Array(buf, base + t.off, n*3), s:t.scale });
+    const pos = new Float32Array(buf, base + hdr.pos, n*3), idx = new Uint16Array(buf, base + hdr.idx, hdr.tris*3), grp = new Uint8Array(buf, base + hdr.grp, n);
+    // neighbours for soft highlight edges
+    const nb = Array.from({length:n}, () => []);
+    for (let i = 0; i < idx.length; i += 3){ const a = idx[i], b = idx[i+1], c = idx[i+2]; nb[a].push(b,c); nb[b].push(a,c); nb[c].push(a,b); }
+    // clothing mask from rest pose: shorts for everyone, sports top for women
+    const nrm = new Float32Array(n*3);
+    for (let i = 0; i < idx.length; i += 3){ const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
+      const ux = pos[b]-pos[a], uy = pos[b+1]-pos[a+1], uz = pos[b+2]-pos[a+2], vx = pos[c]-pos[a], vy = pos[c+1]-pos[a+1], vz = pos[c+2]-pos[a+2];
+      const fx = uy*vz-uz*vy, fy = uz*vx-ux*vz, fz = ux*vy-uy*vx; for (const k of [a,b,c]){ nrm[k] += fx; nrm[k+1] += fy; nrm[k+2] += fz; } }
+    const armG = new Set(["biceps","triceps","forearms","shoulders"].map(g => hdr.groups.indexOf(g)));
+    let minY = Infinity; for (let i = 1; i < n*3; i += 3) minY = Math.min(minY, pos[i]);
+    const shorts = new Uint8Array(n), top = new Uint8Array(n);
+    for (let i = 0; i < n; i++){ const x = Math.abs(pos[i*3]), y = pos[i*3+1], nz = nrm[i*3+2], arm = armG.has(grp[i]) || x > 1.62;
+      if (y > -2.0 && y < 1.2 && x < 2.6 && !(y > 0.3 && x > 1.9)) shorts[i] = 1;
+      if (!arm && (nz >= 0 ? (y > 3.45 && y < 4.62) : (y > 3.7 && y < 4.3))) top[i] = 1; }
+    BODY = { n, T, pos, idx, grp, nb, groups:hdr.groups, shorts, top, minY };
+    return BODY;
+  });
+  return bodyPromise;
+}
+const lv = v => [Math.max(0,1-2*v), 1-Math.abs(2*v-1), Math.max(0,2*v-1)];
+function morph(out, p){
+  const B = BODY, g = p.sex === "male" ? "male" : "female", n3 = B.n*3;
+  out.set(B.pos);
+  const acc = (t, w) => { if (!t || Math.abs(w) < 1e-4) return; const d = t.d, k = t.s*w; for (let i = 0; i < n3; i++) out[i] += d[i]*k; };
+  acc(B.T["eth-"+g], 1);
+  const M = lv(p.muscle), W = lv(p.weight), mn = ["minmuscle","averagemuscle","maxmuscle"], wn = ["minweight","averageweight","maxweight"];
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) acc(B.T[`${g}-${mn[i]}-${wn[j]}`], M[i]*W[j]);
+  if (g === "female") acc(B.T["breast-max"], 0.25);
+  return out;
+}
+function makeBody(p){
+  const B = BODY, geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(B.n*3), col = new Float32Array(B.n*3);
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  geo.setIndex(new THREE.BufferAttribute(B.idx, 1));
+  const mat = new THREE.MeshPhysicalMaterial({ vertexColors:true, roughness:0.52, metalness:0, sheen:0.6, sheenRoughness:0.5, sheenColor:new THREE.Color("#ffd2c0"), clearcoat:0.08, clearcoatRoughness:0.6 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.userData = { params:null, hl:new Float32Array(B.n), skin:"", sex:"" };
+  return mesh;
+}
+function shapeBody(mesh, p){
+  const attr = mesh.geometry.attributes.position;
+  morph(attr.array, p); attr.needsUpdate = true;
+  // soften anatomical detail under the clothing
+  const B = BODY, a = attr.array, sm = mesh.userData.smooth || (mesh.userData.smooth = {});
+  const key = p.sex === "male" ? "m" : "f";
+  if (!sm[key]){ const list = []; for (let i = 0; i < B.n; i++) if (B.shorts[i] || (key === "f" && B.top[i])) list.push(i); sm[key] = Uint32Array.from(list); }
+  const L = sm[key], tmp = new Float32Array(L.length*3);
+  for (let it = 0; it < 6; it++){
+    for (let k = 0; k < L.length; k++){ const i = L[k], nb = B.nb[i]; let x = 0, y = 0, z = 0;
+      for (let j = 0; j < nb.length; j++){ const q = nb[j]*3; x += a[q]; y += a[q+1]; z += a[q+2]; }
+      const c = nb.length || 1; tmp[k*3] = a[i*3]*0.4 + x/c*0.6; tmp[k*3+1] = a[i*3+1]*0.4 + y/c*0.6; tmp[k*3+2] = a[i*3+2]*0.4 + z/c*0.6; }
+    for (let k = 0; k < L.length; k++){ const i = L[k]; a[i*3] = tmp[k*3]; a[i*3+1] = tmp[k*3+1]; a[i*3+2] = tmp[k*3+2]; }
+  }
+  mesh.geometry.computeVertexNormals(); mesh.geometry.computeBoundingSphere(); mesh.geometry.computeBoundingBox();
+  // stand on the floor
+  mesh.position.y = -(mesh.geometry.boundingBox.min.y);
+  mesh.userData.params = p;
+}
+const C = (hex) => new THREE.Color(hex);
+function paintBody(mesh, sex, tone, hlColor){
+  const B = BODY, col = mesh.geometry.attributes.color.array, hl = mesh.userData.hl;
+  const skin = C(TONES[tone] || TONES[1]), fab = C(FABRIC), h = C(hlColor || "#FF3D6E"), tmp = new THREE.Color();
+  for (let i = 0; i < B.n; i++){
+    const cloth = B.shorts[i] || (sex !== "male" && B.top[i]);
+    tmp.copy(cloth ? fab : skin);
+    if (hl[i] > 0) tmp.lerp(h, hl[i]*(cloth ? 0.85 : 0.72));
+    col[i*3] = tmp.r; col[i*3+1] = tmp.g; col[i*3+2] = tmp.b;
+  }
+  mesh.geometry.attributes.color.needsUpdate = true;
+}
+function setHighlight(mesh, group){
+  const B = BODY, gi = B.groups.indexOf(group), hl = mesh.userData.hl;
+  for (let i = 0; i < B.n; i++) hl[i] = B.grp[i] === gi ? 1 : 0;
+  for (let it = 0; it < 3; it++){ const nx = new Float32Array(B.n);
+    for (let i = 0; i < B.n; i++){ const nb = B.nb[i]; let s = hl[i]*2, c = 2; for (let k = 0; k < nb.length; k++){ s += hl[nb[k]]; c++; } nx[i] = s/c; }
+    hl.set(nx); }
+  for (let i = 0; i < B.n; i++) hl[i] = clamp(hl[i]*1.6, 0, 1);
+}
+function studio(renderer){
+  // soft studio environment for realistic skin reflections
+  const env = new THREE.Scene();
+  const box = new THREE.Mesh(new THREE.BoxGeometry(60,60,60), new THREE.MeshBasicMaterial({ color:0x0b0c12, side:THREE.BackSide })); env.add(box);
+  const panel = (c, i, p, s) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(...s), new THREE.MeshBasicMaterial({ color:new THREE.Color(c).multiplyScalar(i), side:THREE.DoubleSide })); m.position.set(...p); m.lookAt(0,0,0); env.add(m); };
+  panel("#ffffff", 6, [0,18,22], [30,10]); panel("#ffd9c4", 3, [-26,6,8], [10,30]); panel("#8fa2ff", 3, [26,4,-10], [10,30]); panel("#ff4d7a", 2.2, [0,4,-28], [30,12]);
+  const pm = new THREE.PMREMGenerator(renderer); const tex = pm.fromScene(env, 0.04).texture; pm.dispose(); return tex;
+}
+function shadowDisc(){
+  const c = document.createElement("canvas"); c.width = c.height = 128; const g = c.getContext("2d");
+  const r = g.createRadialGradient(64,64,0,64,64,64); r.addColorStop(0,"rgba(0,0,0,.75)"); r.addColorStop(.5,"rgba(0,0,0,.35)"); r.addColorStop(1,"rgba(0,0,0,0)");
+  g.fillStyle = r; g.fillRect(0,0,128,128);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(9, 4), new THREE.MeshBasicMaterial({ map:new THREE.CanvasTexture(c), transparent:true, depthWrite:false }));
+  m.rotation.x = -Math.PI/2; m.position.y = 0.02; return m;
+}
+function glowRing(color){
+  const c = document.createElement("canvas"); c.width = c.height = 256; const g = c.getContext("2d");
+  g.strokeStyle = color; g.lineWidth = 6; g.shadowColor = color; g.shadowBlur = 24; g.globalAlpha = .9;
+  g.beginPath(); g.arc(128,128,100,0,Math.PI*2); g.stroke();
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(11, 11), new THREE.MeshBasicMaterial({ map:new THREE.CanvasTexture(c), transparent:true, depthWrite:false, blending:THREE.AdditiveBlending }));
+  m.rotation.x = -Math.PI/2; m.position.y = 0.01; return m;
+}
+function makeRenderer(stage){
+  const r = new THREE.WebGLRenderer({ antialias:true, alpha:true, powerPreference:"high-performance" });
+  r.setPixelRatio(Math.min(devicePixelRatio, 2));
+  r.outputEncoding = THREE.sRGBEncoding; r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
+  stage.prepend(r.domElement); return r;
+}
+function lights(scene, warm){
+  scene.add(new THREE.HemisphereLight(0xdfe6ff, 0x1a1210, 0.35));
+  const key = new THREE.DirectionalLight(0xfff1e6, 1.6); key.position.set(6, 14, 12); scene.add(key);
+  const rimL = new THREE.DirectionalLight(warm ? 0xff6a3d : 0x8f7bff, 2.2); rimL.position.set(-10, 6, -8); scene.add(rimL);
+  const rimR = new THREE.DirectionalLight(0xff3d7f, 1.6); rimR.position.set(10, 8, -6); scene.add(rimR);
+}
+function failBox(stage, loader, msg){ if (loader) loader.remove(); stage.insertAdjacentHTML("beforeend", `<div class="loading"><div style="padding:24px;text-align:center">${msg}</div></div>`); }
+function webglOK(){ try { const c = document.createElement("canvas"); return !!(window.WebGLRenderingContext && (c.getContext("webgl2") || c.getContext("webgl"))); } catch { return false; } }
+
+/* ---------- home mirror (two bodies, one renderer) ---------- */
+let mirror = null;
+async function initMirror(){
+  const stage = $("#mirrorStage"), loader = $("#mirrorLoading");
+  if (!window.THREE || !webglOK()) return failBox(stage, loader, "3D isn't available on this device. Your numbers below still update.");
+  try { await loadBody(); } catch { return failBox(stage, loader, "Couldn't load the 3D body. Check your connection and reopen the app."); }
+  const renderer = makeRenderer(stage), scene = new THREE.Scene();
+  scene.environment = studio(renderer); lights(scene, true);
+  const camera = new THREE.PerspectiveCamera(24, 1, 1, 200);
+  const stop = makeBody(P()), train = makeBody(P());
+  const gStop = new THREE.Group(), gTrain = new THREE.Group();
+  gStop.add(stop, shadowDisc()); gTrain.add(train, shadowDisc(), glowRing("#FF3D7E"));
+  scene.add(gStop, gTrain);
+  let w = 0, h = 0;
+  function size(){ w = stage.clientWidth; h = stage.clientHeight; if (!w) return; renderer.setSize(w, h, false); }
+  new ResizeObserver(size).observe(stage); size();
+  loader.remove();
+  let rot = 0, drag = null, spin = 0;
+  const cv = renderer.domElement; cv.style.touchAction = "pan-y";
+  cv.addEventListener("pointerdown", e => drag = { x:e.clientX, r:spin });
+  cv.addEventListener("pointermove", e => { if (drag) spin = drag.r + (e.clientX - drag.x)*0.012; });
+  ["pointerup","pointercancel","pointerleave"].forEach(t => cv.addEventListener(t, () => drag = null));
+  mirror = { stop, train, gStop, gTrain };
+  updateMirrorBodies();
+  let vis = true; new IntersectionObserver(es => vis = es[0].isIntersecting).observe(stage);
+  let last = performance.now();
+  (function loop(t){
+    requestAnimationFrame(loop);
+    if (!vis || stage.offsetParent === null) return;
+    const dt = Math.min(50, t - last); last = t;
+    if (!drag && !reduceMotion) rot += dt*0.00025;
+    const a = Math.sin(rot)*0.55 + spin;
+    gStop.rotation.y = a; gTrain.rotation.y = a;
+    renderer.setScissorTest(true);
+    const half = Math.floor(w/2);
+    [[gStop, 0], [gTrain, half]].forEach(([grp, x0]) => {
+      gStop.visible = grp === gStop; gTrain.visible = grp === gTrain;
+      const vw = (x0 ? w - half : half);
+      camera.aspect = vw/h; camera.updateProjectionMatrix();
+      const H = 17.5, dist = (H/2)/Math.tan(THREE.MathUtils.degToRad(camera.fov/2)) * Math.max(1, 0.62/camera.aspect) * 1.02;
+      camera.position.set(0, 8.6, dist); camera.lookAt(0, 8.3, 0);
+      renderer.setViewport(x0, 0, vw, h); renderer.setScissor(x0, 0, vw, h);
+      renderer.render(scene, camera);
+    });
+    renderer.setScissorTest(false);
+  })(last);
+}
+let tweenId = 0;
+function updateMirrorBodies(){
+  if (!mirror) return;
+  const p = P(), a = project(p, viewMonths, "stop", 0), b = project(p, viewMonths, "train", viewDays);
+  const ta = Object.assign({ sex:p.sex }, bodyParams(p, a)), tb = Object.assign({ sex:p.sex }, bodyParams(p, b));
+  const sexChanged = mirror.stop.userData.sex !== p.sex || mirror.stop.userData.skin !== p.tone;
+  [mirror.stop, mirror.train].forEach(m => { if (sexChanged){ m.userData.sex = p.sex; m.userData.skin = p.tone; } });
+  const fa = mirror.stop.userData.params && !sexChanged ? { ...mirror.stop.userData.params } : ta;
+  const fb = mirror.train.userData.params && !sexChanged ? { ...mirror.train.userData.params } : tb;
+  if (sexChanged){ paintBody(mirror.stop, p.sex, p.tone, "#000"); paintBody(mirror.train, p.sex, p.tone, "#000"); }
+  const id = ++tweenId, t0 = performance.now(), dur = reduceMotion || sexChanged ? 0 : 700;
+  const lerp = (x, y, k) => ({ sex:p.sex, muscle:x.muscle + (y.muscle - x.muscle)*k, weight:x.weight + (y.weight - x.weight)*k });
+  (function step(t){
+    if (id !== tweenId) return;
+    const k = dur ? clamp((t - t0)/dur, 0, 1) : 1, e = 1 - Math.pow(1-k, 3);
+    shapeBody(mirror.stop, lerp(fa, ta, e)); shapeBody(mirror.train, lerp(fb, tb, e));
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+/* ---------- home ---------- */
+function renderMirror(){
+  const p = P(), a = project(p, viewMonths, "stop", 0), b = project(p, viewMonths, "train", viewDays);
+  const label = {1:"1 month",3:"3 months",6:"6 months",12:"1 year",24:"2 years"}[viewMonths];
+  $("#mirrorTitle").textContent = `You in ${label}`;
+  $("#daysV").textContent = viewDays + "×";
+  document.querySelectorAll("#monthsSeg button").forEach(btn => btn.setAttribute("aria-pressed", +btn.dataset.m === viewMonths));
+  const d = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1);
+  const cell = (k, sv, tv, unit, diff) => `<div class="cmp"><span class="k">${k}</span><div class="pair"><span><span>Stop</span><em>${sv}${unit}</em></span><b><span style="font-size:11px;font-family:var(--body);color:var(--muted);font-weight:700">Train</span>${tv}${unit}</b>${diff}</div></div>`;
+  $("#compare").innerHTML =
+    cell("Weight", a.weight.toFixed(1), b.weight.toFixed(1), "", `<span><span>kg</span><em style="color:${b.weight<=a.weight?"var(--mint)":"var(--sun)"}">${d(b.weight - a.weight)}</em></span>`) +
+    cell("Body fat", a.bf.toFixed(0), b.bf.toFixed(0), "%", `<span><span>vs stop</span><em style="color:var(--mint)">${d(b.bf - a.bf)}%</em></span>`) +
+    cell("Muscle", d(a.lean - a.lean0), d(b.lean - b.lean0), "", `<span><span>kg change</span><em style="color:var(--mint)">${d(b.lean - a.lean)}</em></span>`);
+  const fatGap = a.fat - b.fat, musGap = b.lean - a.lean;
+  $("#verdict").innerHTML = `Training <b>${viewDays}× a week</b> for ${label} could mean about <b>${fatGap.toFixed(1)} kg less fat</b> and <b>${musGap.toFixed(1)} kg more muscle</b> than stopping. ${p.goal==="lose" ? "Follow the Diet tab to get there faster." : "Hit your protein target to keep the gains."}`;
+  updateMirrorBodies();
+}
+$("#monthsSeg").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (b){ viewMonths = +b.dataset.m; renderMirror(); } });
+$("#dMinus").addEventListener("click", () => { viewDays = clamp(viewDays-1, 1, 6); renderMirror(); });
+$("#dPlus").addEventListener("click", () => { viewDays = clamp(viewDays+1, 1, 6); renderMirror(); });
+
+const GROUPS = {
+  chest:{n:"Chest"}, shoulders:{n:"Shoulders"}, biceps:{n:"Biceps"}, triceps:{n:"Triceps"}, forearms:{n:"Forearms"},
+  abs:{n:"Abs"}, obliques:{n:"Obliques"}, traps:{n:"Traps"}, back:{n:"Upper back"}, lowerback:{n:"Lower back"},
+  glutes:{n:"Glutes"}, quads:{n:"Quads"}, hamstrings:{n:"Hamstrings"}, calves:{n:"Calves"}
+};
+const E = (g, name, equip, level, sets, steps, tip) => ({ id:(g+"-"+name).toLowerCase().replace(/[^a-z0-9]+/g,"-"), g, name, equip, level, sets, steps, tip });
+const EX = [
+  E("chest","Push-up","none","Beginner","3 × 8–12",["Hands just wider than shoulders, body in one straight line.","Lower your chest to a fist's height above the floor.","Press back up, squeezing your chest."],"Too hard? Do them with knees down or hands on a bench."),
+  E("chest","Incline push-up","none","Beginner","3 × 10–15",["Hands on a table, bench or wall.","Walk feet back until your body is straight.","Bend elbows to bring chest to the edge, then push away."],"The higher the hands, the easier it gets."),
+  E("chest","Wide push-up","none","Intermediate","3 × 8–12",["Set hands a hand-width wider than usual.","Lower slowly for 3 seconds.","Push up without locking elbows hard."],"Keep elbows at about 45°, not flared straight out."),
+  E("chest","Dumbbell bench press","dumbbell","Beginner","3 × 8–10",["Lie on a bench with dumbbells over your chest.","Lower them to the sides of your chest.","Press up until arms are straight."],"Keep shoulder blades pinched back the whole time."),
+  E("chest","Dumbbell fly","dumbbell","Intermediate","3 × 10–12",["Lie back, arms up with a slight elbow bend.","Open arms wide in an arc until you feel a stretch.","Hug them back together over your chest."],"Use lighter weights than you press."),
+  E("chest","Barbell bench press","gym","Intermediate","4 × 6–8",["Grip just wider than shoulders, feet planted.","Lower the bar to mid-chest.","Drive up and slightly back."],"Always use a spotter or safety pins for heavy sets."),
+  E("chest","Cable crossover","gym","Intermediate","3 × 12–15",["Set pulleys high, step forward with a staggered stance.","Pull handles down and together in front of your hips.","Return slowly with control."],"Think 'hug a tree', not 'push'."),
+  E("shoulders","Pike push-up","none","Intermediate","3 × 6–10",["Start in a push-up, walk feet in so hips point up.","Bend elbows to lower your head toward the floor.","Press back up."],"Feet on a step makes it harder."),
+  E("shoulders","Arm circles","none","Beginner","3 × 30 s",["Arms straight out to the sides.","Make small circles forward, growing bigger.","Switch direction halfway."],"Great as a warm-up before any upper-body day."),
+  E("shoulders","Dumbbell shoulder press","dumbbell","Beginner","3 × 8–12",["Stand or sit, dumbbells at shoulder height.","Press overhead until arms are straight.","Lower back to your shoulders."],"Brace your abs so your lower back doesn't arch."),
+  E("shoulders","Lateral raise","dumbbell","Beginner","3 × 12–15",["Hold light dumbbells at your sides.","Raise arms out to shoulder height, elbows soft.","Lower over 2–3 seconds."],"Lead with your elbows, not your hands."),
+  E("shoulders","Face pull","gym","Intermediate","3 × 12–15",["Set a rope at face height on a cable.","Pull toward your eyes, hands splitting apart.","Squeeze shoulder blades, then return."],"Excellent for posture if you sit a lot."),
+  E("biceps","Towel curl","none","Beginner","3 × 10 each",["Loop a towel under one foot, hold both ends.","Curl up while your foot gently resists.","Lower slowly."],"Adjust the challenge by pushing harder with your foot."),
+  E("biceps","Dumbbell curl","dumbbell","Beginner","3 × 10–12",["Stand tall, palms facing forward.","Curl the weights up, elbows pinned to your sides.","Lower all the way down."],"No swinging: if you have to, the weight is too heavy."),
+  E("biceps","Hammer curl","dumbbell","Beginner","3 × 10–12",["Hold dumbbells with palms facing each other.","Curl up keeping the thumb side on top.","Lower with control."],"Also builds your forearms."),
+  E("biceps","Cable curl","gym","Beginner","3 × 12",["Stand facing a low cable with a straight bar.","Curl to your chest.","Lower slowly against the cable."],"Constant tension makes the last reps burn."),
+  E("triceps","Bench dip","none","Beginner","3 × 8–12",["Hands on a chair edge behind you, legs out.","Bend elbows to lower your hips.","Push back up."],"Bend your knees to make it easier."),
+  E("triceps","Diamond push-up","none","Intermediate","3 × 6–10",["Hands together under your chest, fingers forming a diamond.","Lower chest to your hands.","Press up."],"Do it on your knees to start."),
+  E("triceps","Overhead extension","dumbbell","Beginner","3 × 10–12",["Hold one dumbbell overhead with both hands.","Lower it behind your head by bending elbows.","Straighten arms back up."],"Keep elbows pointing forward, close to your head."),
+  E("triceps","Rope pushdown","gym","Beginner","3 × 12",["Hold a rope on a high cable.","Push down and split the rope at the bottom.","Let it rise to chest height."],"Only your forearms should move."),
+  E("forearms","Fist clench & spread","none","Beginner","3 × 30 s",["Arms out in front.","Clench fists hard, then spread fingers wide.","Repeat quickly."],"Good for desk workers and wrist health."),
+  E("forearms","Wrist curl","dumbbell","Beginner","3 × 15",["Rest forearms on your thighs, palms up.","Curl the dumbbell up using only your wrist.","Lower slowly."],"Light weight, full range."),
+  E("forearms","Farmer carry","dumbbell","Beginner","3 × 40 m",["Pick up two heavy dumbbells.","Walk tall with shoulders back.","Set down safely."],"Builds grip, core and posture at once."),
+  E("forearms","Dead hang","gym","Beginner","3 × 20–40 s",["Grab a pull-up bar, arms straight.","Hang with shoulders slightly engaged.","Drop down safely."],"Also great for shoulder mobility."),
+  E("abs","Plank","none","Beginner","3 × 30–45 s",["Forearms down, elbows under shoulders.","Body straight from head to heels.","Breathe and hold."],"Squeeze glutes so your hips don't sag."),
+  E("abs","Dead bug","none","Beginner","3 × 8 each",["Lie on your back, arms up, knees bent at 90°.","Lower opposite arm and leg toward the floor.","Return and switch sides."],"Press your lower back into the floor."),
+  E("abs","Crunch","none","Beginner","3 × 15",["Lie with knees bent, hands by your ears.","Curl shoulders off the floor.","Lower slowly."],"Don't pull on your neck."),
+  E("abs","Hanging knee raise","gym","Intermediate","3 × 10",["Hang from a bar.","Bring knees up toward your chest.","Lower without swinging."],"Start with captain's-chair raises if hanging is tough."),
+  E("obliques","Side plank","none","Beginner","3 × 20–30 s each",["Lie on your side, elbow under shoulder.","Lift hips so your body is straight.","Hold, then switch sides."],"Drop the bottom knee to make it easier."),
+  E("obliques","Russian twist","none","Beginner","3 × 20",["Sit, lean back slightly, feet down or up.","Rotate your torso side to side.","Touch the floor beside each hip."],"Move from your ribs, not just your arms."),
+  E("obliques","Bicycle crunch","none","Intermediate","3 × 20",["Lie back, hands by ears, legs raised.","Bring opposite elbow toward opposite knee.","Pedal steadily."],"Slow beats fast here."),
+  E("obliques","Cable woodchop","gym","Intermediate","3 × 12 each",["Set a cable high, stand side-on.","Pull diagonally down across your body.","Return with control."],"Pivot your back foot as you rotate."),
+  E("traps","Prone Y-raise","none","Beginner","3 × 12",["Lie face down, arms overhead in a Y.","Lift arms off the floor, thumbs up.","Hold one second, lower."],"Small range is fine. Squeeze between shoulder blades."),
+  E("traps","Dumbbell shrug","dumbbell","Beginner","3 × 15",["Hold dumbbells at your sides.","Lift shoulders straight up toward your ears.","Pause, then lower."],"No rolling: straight up and down."),
+  E("traps","Barbell shrug","gym","Intermediate","3 × 12",["Hold a barbell in front of your thighs.","Shrug up hard.","Lower slowly."],"Use straps if grip gives out first."),
+  E("back","Towel door row","none","Beginner","3 × 10–12",["Loop a towel around a sturdy door handle, door closed.","Lean back with straight arms.","Pull your chest to your hands."],"Check the door is locked and solid first."),
+  E("back","Superman pull","none","Beginner","3 × 12",["Lie face down, arms overhead.","Lift chest and pull elbows down to your ribs.","Reach back out."],"Feel your upper back do the work."),
+  E("back","One-arm dumbbell row","dumbbell","Beginner","3 × 10 each",["Knee and hand on a bench, back flat.","Pull the dumbbell to your hip.","Lower until your arm is straight."],"Think 'elbow to back pocket'."),
+  E("back","Lat pulldown","gym","Beginner","3 × 10–12",["Grip the bar wide, sit tall.","Pull the bar to your upper chest.","Let it rise with control."],"Don't lean far back."),
+  E("back","Pull-up","gym","Advanced","3 × as many as you can",["Hang with palms facing away.","Pull until your chin is over the bar.","Lower fully."],"Use a band or the assisted machine to build up."),
+  E("lowerback","Bird dog","none","Beginner","3 × 8 each",["On hands and knees.","Reach one arm forward and the opposite leg back.","Hold 2 seconds and switch."],"Keep your hips level like a table."),
+  E("lowerback","Superman hold","none","Beginner","3 × 20 s",["Lie face down, arms forward.","Lift arms, chest and legs slightly.","Hold, then relax."],"Look at the floor to protect your neck."),
+  E("lowerback","Romanian deadlift","dumbbell","Intermediate","3 × 10",["Stand holding dumbbells, knees soft.","Push hips back and slide weights down your legs.","Stand up by squeezing glutes."],"Keep your back flat. Stop when you feel the hamstrings stretch."),
+  E("lowerback","Back extension","gym","Beginner","3 × 12",["Set the pad at your hip bones.","Lower your torso forward.","Rise until your body is straight."],"Don't hyperextend at the top."),
+  E("glutes","Glute bridge","none","Beginner","3 × 15",["Lie back, knees bent, feet flat.","Drive hips up through your heels.","Squeeze 1 second, lower."],"Push your knees slightly outward."),
+  E("glutes","Donkey kick","none","Beginner","3 × 12 each",["On hands and knees.","Kick one heel up toward the ceiling, knee bent.","Lower and repeat."],"Don't arch your lower back."),
+  E("glutes","Hip thrust","dumbbell","Intermediate","3 × 10–12",["Upper back on a bench, dumbbell on your hips.","Drive hips up until level.","Lower with control."],"Chin tucked, ribs down."),
+  E("glutes","Bulgarian split squat","dumbbell","Intermediate","3 × 8 each",["Back foot on a bench behind you.","Lower your back knee toward the floor.","Push up through the front heel."],"Lean slightly forward to target glutes more."),
+  E("quads","Bodyweight squat","none","Beginner","3 × 12–15",["Feet shoulder-width, toes slightly out.","Sit back and down until thighs are level.","Stand up tall."],"Knees follow the line of your toes."),
+  E("quads","Reverse lunge","none","Beginner","3 × 10 each",["Step one foot back.","Lower until both knees are at 90°.","Push back to standing."],"Easier on knees than forward lunges."),
+  E("quads","Wall sit","none","Beginner","3 × 30–45 s",["Back against a wall.","Slide down until knees are at 90°.","Hold."],"Hands off your thighs."),
+  E("quads","Goblet squat","dumbbell","Beginner","3 × 10–12",["Hold a dumbbell at your chest.","Squat down between your knees.","Drive up."],"The weight in front helps you stay upright."),
+  E("quads","Leg press","gym","Beginner","3 × 10–12",["Feet shoulder-width on the platform.","Lower until knees are at 90°.","Press without locking knees."],"Keep your lower back on the seat."),
+  E("hamstrings","Good morning","none","Beginner","3 × 12",["Hands behind your head, knees soft.","Hinge at hips, back flat.","Stand back up."],"Move slowly and feel the stretch."),
+  E("hamstrings","Single-leg bridge","none","Intermediate","3 × 10 each",["Lie back, one foot down, other leg up.","Drive hips up through the planted heel.","Lower slowly."],"Move the foot farther out to hit hamstrings more."),
+  E("hamstrings","Dumbbell RDL","dumbbell","Intermediate","3 × 10",["Hold dumbbells in front of thighs.","Hinge forward, weights close to your legs.","Squeeze up."],"Soft knees, flat back."),
+  E("hamstrings","Lying leg curl","gym","Beginner","3 × 12",["Lie face down on the machine.","Curl the pad toward your glutes.","Lower slowly."],"Keep hips pressed into the pad."),
+  E("calves","Calf raise","none","Beginner","3 × 15–20",["Stand on a step edge, heels hanging.","Rise onto your toes.","Lower heels below the step."],"Pause at the top for a better squeeze."),
+  E("calves","Jump rope","none","Beginner","5 × 1 min",["Jump on the balls of your feet.","Keep jumps small and quick.","Rest 30 s between rounds."],"No rope? Mimic the motion."),
+  E("calves","Single-leg calf raise","dumbbell","Intermediate","3 × 12 each",["Hold a dumbbell, stand on one foot.","Rise up fully.","Lower slowly."],"Hold a wall for balance."),
+  E("calves","Seated calf raise","gym","Beginner","3 × 15",["Sit with pad on your knees.","Raise your heels.","Lower fully."],"Targets the deeper calf muscle.")
+];
+const EQUIP = { none:"No equipment", dumbbell:"Dumbbells", gym:"Gym" };
+const allowedEquip = eq => eq === "gym" ? ["none","dumbbell","gym"] : eq === "dumbbell" ? ["none","dumbbell"] : ["none"];
+
+const GROUP_HUE = { chest:"#FF5B2E", shoulders:"#FF8A2E", biceps:"#FF2E7E", triceps:"#C23BFF", forearms:"#7B6CFF", abs:"#38F2A8", obliques:"#22C7A0", traps:"#56C8FF", back:"#3E8BFF", lowerback:"#5B6BFF", glutes:"#FF4FA3", quads:"#FFB02E", hamstrings:"#FF7A55", calves:"#B8F23A" };
+const icoBg = g => `background:linear-gradient(135deg,${GROUP_HUE[g]},${GROUP_HUE[g]}88)`;
+
+/* ---------- daily plan ---------- */
+const SPLITS = [
+  { t:"Upper body push", g:["chest","shoulders","triceps","abs"] },
+  { t:"Lower body power", g:["quads","glutes","hamstrings","calves"] },
+  { t:"Upper body pull", g:["back","biceps","traps","obliques"] },
+  { t:"Core & full body", g:["abs","quads","chest","lowerback"] }
+];
+function seeded(n){ let x = n % 2147483647 || 1; return () => (x = x*48271 % 2147483647)/2147483647; }
+function buildPlan(bump){
+  const p = P(), allowed = allowedEquip(p.equip), dayIdx = Math.floor(Date.now()/864e5) + (bump||0);
+  const split = SPLITS[((dayIdx % 4)+4)%4], rnd = seeded(dayIdx*7+13);
+  const ids = split.g.map(g => { const o = EX.filter(e => e.g===g && allowed.includes(e.equip)); return o[Math.floor(rnd()*o.length)].id; });
+  return { title: split.t, ids, done: [] };
+}
+function todaysPlan(){ const k = today(); if (!S.plans[k]) { S.plans = { [k]: buildPlan(0) }; save(); } return S.plans[k]; }
+const loggedToday = () => S.history.some(h => h.date === today());
+function renderPlan(){
+  const plan = todaysPlan(), logged = loggedToday();
+  $("#planTitle").textContent = plan.title;
+  $("#planMeta").innerHTML = `<span class="pill">${plan.ids.length} moves</span><span class="pill">~${plan.ids.length*6} min</span><span class="pill">${EQUIP[P().equip]}</span>${logged ? `<span class="pill" style="background:rgba(56,242,168,.25);color:#B8FFE0">Done today</span>` : ""}`;
+  $("#planList").innerHTML = plan.ids.map((id, i) => { const e = EX.find(x => x.id === id); if (!e) return "";
+    return `<div class="move ${logged ? "done" : ""}"><span class="n">${logged ? "✓" : i+1}</span><div class="t"><b>${esc(e.name)}</b><span>${esc(e.sets)} · ${esc(GROUPS[e.g].n)}</span></div><button class="how" type="button" data-how="${e.g}" data-ex="${e.id}">How</button></div>`; }).join("");
+  $("#startBtn").textContent = logged ? "Done for today. Go again?" : "Start workout";
+  $("#shuffleBtn").hidden = logged; $("#quickLog").hidden = logged;
+}
+$("#planList").addEventListener("click", ev => { const how = ev.target.closest("[data-how]"); if (how){ go("map"); openGroup(how.dataset.how, how.dataset.ex); } });
+let shuffleN = 0;
+$("#shuffleBtn").addEventListener("click", () => { shuffleN++; S.plans[today()] = buildPlan(shuffleN); save(); renderPlan(); });
+$("#quickLog").addEventListener("click", logWorkout);
+$("#startBtn").addEventListener("click", () => openPlayer());
+function logWorkout(){
+  if (loggedToday()) return;
+  const plan = todaysPlan();
+  S.history.push({ date: today(), groups: plan.ids.map(id => (EX.find(e=>e.id===id)||{}).g) });
+  save(); renderHome(); confetti();
+  const s = streak(); toast(s > 1 ? `Workout logged · ${s}-day streak` : "Workout logged · streak started");
+}
+
+/* ---------- workout player ---------- */
+function openPlayer(){
+  const plan = todaysPlan(), moves = plan.ids.map(id => EX.find(e => e.id === id)).filter(Boolean);
+  let mi = 0, set = 1, resting = false, timer = null, left = 0;
+  const REST = 45;
+  const el = document.createElement("div"); el.className = "player"; el.setAttribute("role","dialog"); el.setAttribute("aria-label","Workout");
+  document.body.appendChild(el); document.body.style.overflow = "hidden";
+  const setsOf = e => parseInt(e.sets, 10) || 3;
+  const close = () => { clearInterval(timer); el.remove(); document.body.style.overflow = ""; };
+  function draw(){
+    const e = moves[mi], total = setsOf(e);
+    const bar = moves.map((_, i) => `<i class="${i < mi ? "on" : i === mi ? "cur" : ""}" style="--p:${i === mi ? Math.round((set-1)/total*100) : 0}%"></i>`).join("");
+    const reps = e.sets.split("×")[1] ? e.sets.split("×")[1].trim() : "";
+    el.innerHTML = `<div class="row between" style="max-width:480px;width:100%;margin:0 auto 12px"><span class="eyebrow">Move ${mi+1} of ${moves.length}</span><button class="roundbtn" type="button" data-a="x">End</button></div>
+      <div class="bar" style="max-width:480px;width:100%;margin:0 auto">${bar}</div>
+      <div class="mid">${resting ? `
+        <span class="eyebrow" style="text-align:center">Rest · next up: ${esc(set > total ? (moves[mi+1]||{}).name || "" : e.name)}</span>
+        <div class="timer"><svg viewBox="0 0 220 220"><circle cx="110" cy="110" r="96" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="14"/><circle id="rt" cx="110" cy="110" r="96" fill="none" stroke="url(#g-ice)" stroke-width="14" stroke-linecap="round" stroke-dasharray="603.2" stroke-dashoffset="${603.2*(1-left/REST)}" style="transition:stroke-dashoffset 1s linear"/></svg><b id="rtv">${left}</b></div>
+        <p class="muted" style="text-align:center">Breathe. Sip some water.</p>` : `
+        <span class="eyebrow" style="color:${GROUP_HUE[e.g]}">${esc(GROUPS[e.g].n)}</span>
+        <h2>${esc(e.name)}</h2>
+        <p class="big">Set ${set} of ${total}${reps ? ` · <span class="grad-text">${esc(reps)}</span>` : ""}</p>
+        <ol>${e.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+        <p class="small" style="color:var(--sun)">${esc(e.tip)}</p>`}
+      </div>
+      <div class="acts">${resting ? `<button class="btn ghost" type="button" data-a="skip">Skip rest</button>` : `<button class="btn" type="button" data-a="done">${set === total && mi === moves.length-1 ? "Finish workout" : "Set done"}</button>`}</div>`;
+  }
+  function rest(){
+    resting = true; left = REST; draw();
+    timer = setInterval(() => { left--; if (left <= 0){ clearInterval(timer); resting = false; draw(); return; }
+      const v = el.querySelector("#rtv"), r = el.querySelector("#rt"); if (v) v.textContent = left; if (r) r.setAttribute("stroke-dashoffset", 603.2*(1-left/REST)); }, 1000);
+  }
+  el.addEventListener("click", ev => {
+    const a = ev.target.closest("[data-a]"); if (!a) return;
+    if (a.dataset.a === "x") return close();
+    if (a.dataset.a === "skip"){ clearInterval(timer); resting = false; draw(); return; }
+    if (a.dataset.a === "done"){
+      const total = setsOf(moves[mi]);
+      if (set < total){ set++; rest(); }
+      else if (mi < moves.length-1){ mi++; set = 1; rest(); }
+      else { close(); if (loggedToday()) { confetti(); toast("Bonus workout done. Beast mode!"); } else logWorkout(); }
+    }
+  });
+  draw();
+}
+
+/* ---------- home render ---------- */
+const CHALLENGES = [
+  { t:"Train 3 days this week", test:w=>w.length, goal:3 },
+  { t:"Work 6 different muscle groups", test:w=>new Set(w.flatMap(h=>h.groups)).size, goal:6 },
+  { t:"Train 2 days in a row", test:w=>{ let best=0,run=0,prev=null; w.map(h=>h.date).sort().forEach(d=>{ const t=new Date(d).getTime(); run = prev!==null && t-prev===864e5 ? run+1 : 1; prev=t; best=Math.max(best,run); }); return best; }, goal:2 },
+  { t:"Do a lower-body day this week", test:w=>w.some(h=>h.groups.includes("quads")||h.groups.includes("glutes"))?1:0, goal:1 }
+];
+function badgesList(){ const n = S.history.length, s = streak();
+  return [ { k:"1", n:"First workout", d:"Log your first session", got:n>=1 }, { k:"3", n:"On fire", d:"3-day streak", got:s>=3 }, { k:"7", n:"Unstoppable", d:"7-day streak", got:s>=7 },
+    { k:"10", n:"Ten strong", d:"10 workouts", got:n>=10 }, { k:"8", n:"Explorer", d:"Open 8 muscles", got:S.explored.length>=8 }, { k:"25", n:"Committed", d:"25 workouts", got:n>=25 } ]; }
+function renderHome(){
+  const p = P();
+  $("#exampleBanner").hidden = !!S.profile;
+  $("#avatar").textContent = (S.profile && S.profile.name ? S.profile.name[0] : "F").toUpperCase();
+  const d = new Date(), h = d.getHours();
+  $("#helloTitle").textContent = `${h<12?"Good morning":h<18?"Good afternoon":"Good evening"}${S.profile && S.profile.name ? ", "+S.profile.name : ""}`;
+  $("#dateLabel").textContent = d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
+  const keys = weekKeys(), wk = S.history.filter(x => keys.includes(x.date)), s = streak();
+  $("#streakV").textContent = s;
+  const xp = S.history.length*50 + S.explored.length*5, lvl = Math.floor(xp/200)+1;
+  $("#weekV").innerHTML = `${wk.length}<small>/${p.days} workouts</small>`;
+  $("#streakV2").innerHTML = `${s}<small> ${s===1?"day":"days"}</small>`;
+  $("#levelL").textContent = "Level " + lvl; $("#xpV").innerHTML = `${xp}<small> XP · ${200 - xp%200} to next</small>`;
+  requestAnimationFrame(() => {
+    $("#ring1").setAttribute("stroke-dashoffset", 364.4*(1 - Math.min(1, wk.length/p.days)));
+    $("#ring2").setAttribute("stroke-dashoffset", 270.2*(1 - Math.min(1, s/7)));
+    $("#ring3").setAttribute("stroke-dashoffset", 175.9*(1 - (xp%200)/200));
+  });
+  const t = today(), names = ["M","T","W","T","F","S","S"];
+  $("#weekRow").innerHTML = keys.map((k,i) => { const done = S.history.some(x => x.date === k);
+    return `<div class="day ${done?"done":""} ${k===t?"today":""}"><i>${done ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>` : ""}</i>${names[i]}</div>`; }).join("");
+  const ch = CHALLENGES[weekNo() % CHALLENGES.length], prog = Math.min(ch.test(wk), ch.goal);
+  $("#chTitle").textContent = ch.t; $("#chProg").textContent = prog >= ch.goal ? "Complete! New one on Monday." : `${prog} of ${ch.goal} · resets Monday`;
+  $("#chRing").setAttribute("stroke-dashoffset", 157.1*(1 - prog/ch.goal));
+  const bl = badgesList();
+  $("#badgeCount").textContent = `${bl.filter(b=>b.got).length} of ${bl.length}`;
+  $("#badges").innerHTML = bl.map(b => `<div class="glass badge ${b.got?"got":""}"><i>${b.k}</i><div><b>${b.n}</b><br><span>${b.d}</span></div></div>`).join("");
+  renderMirror(); renderPlan();
+}
+
+/* ---------- body map ---------- */
+let curGroup = "chest", curEquip = "all", mapApi = null;
+function renderGroupChips(){
+  $("#groupChips").innerHTML = Object.entries(GROUPS).map(([k,g]) => `<button class="chip" type="button" data-g="${k}" aria-pressed="${k===curGroup}">${g.n}</button>`).join("");
+  $("#equipChips").innerHTML = [["all","All equipment"],["none","No equipment"],["dumbbell","Dumbbells"],["gym","Gym"]].map(([k,n]) => `<button class="chip" type="button" data-eq="${k}" aria-pressed="${k===curEquip}">${n}</button>`).join("");
+}
+function renderExList(openId){
+  const list = EX.filter(e => e.g === curGroup && (curEquip === "all" || e.equip === curEquip));
+  $("#pickedName").textContent = GROUPS[curGroup].n;
+  $("#pickedSub").textContent = `${list.length} ${list.length===1?"move":"moves"} · tap one for steps`;
+  const plan = todaysPlan();
+  $("#exList").innerHTML = list.length ? list.map(e => { const inPlan = plan.ids.includes(e.id);
+    return `<details class="ex" ${e.id===openId?"open":""}><summary><span class="ico" style="${icoBg(e.g)}">${esc(e.name.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase())}</span>
+      <span class="meta"><b>${esc(e.name)}</b><span>${esc(e.sets)} · ${esc(e.level)}</span></span><span class="eq">${EQUIP[e.equip]}</span></summary>
+      <ol>${e.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol><p class="tip"><b>Coach tip</b> ${esc(e.tip)}</p>
+      <button class="btn ${inPlan?"ghost":""} add" type="button" data-add="${e.id}" ${inPlan?"disabled":""}>${inPlan?"In today's workout":"Add to today's workout"}</button></details>`; }).join("")
+    : `<p class="muted small">No moves for this equipment. Try "All equipment".</p>`;
+}
+function openGroup(g, exId){
+  curGroup = g; if (!S.explored.includes(g)) { S.explored.push(g); save(); }
+  renderGroupChips(); renderExList(exId);
+  const chip = document.querySelector(`#groupChips [data-g="${g}"]`); if (chip) chip.scrollIntoView({ inline:"center", block:"nearest", behavior: reduceMotion ? "auto" : "smooth" });
+  if (mapApi) mapApi.select(g);
+}
+$("#groupChips").addEventListener("click", e => { const b = e.target.closest("[data-g]"); if (b) openGroup(b.dataset.g); });
+$("#equipChips").addEventListener("click", e => { const b = e.target.closest("[data-eq]"); if (b){ curEquip = b.dataset.eq; renderGroupChips(); renderExList(); } });
+$("#exList").addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (!b) return;
+  if (loggedToday()) { toast("Today's workout is already logged"); return; }
+  todaysPlan().ids.push(b.dataset.add); save(); renderExList(b.dataset.add); renderPlan(); toast("Added to today's workout"); });
+
+async function initMap(){
+  const stage = $("#mapStage"), loader = $("#mapLoading");
+  if (!window.THREE || !webglOK()) return failBox(stage, loader, "3D isn't available on this device. Pick a muscle from the list below.");
+  try { await loadBody(); } catch { return failBox(stage, loader, "Couldn't load the 3D body. Pick a muscle from the list below."); }
+  const renderer = makeRenderer(stage), scene = new THREE.Scene();
+  scene.environment = studio(renderer); lights(scene, false);
+  const camera = new THREE.PerspectiveCamera(22, 1, 1, 200);
+  const p = P(), body = makeBody(p), grp = new THREE.Group();
+  grp.add(body, shadowDisc(), glowRing("#7B6CFF")); scene.add(grp);
+  shapeBody(body, { sex:p.sex, muscle:0.88, weight:0.32 });
+  body.userData.sex = p.sex; body.userData.skin = p.tone;
+  setHighlight(body, curGroup); paintBody(body, p.sex, p.tone, GROUP_HUE[curGroup]);
+  loader.remove();
+  let w = 0, h = 0;
+  function size(){ w = stage.clientWidth; h = stage.clientHeight; if (!w) return; renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix();
+    const H = 18.2, dist = (H/2)/Math.tan(THREE.MathUtils.degToRad(camera.fov/2)) * Math.max(1, 0.58/camera.aspect);
+    camera.position.set(0, 9.2, dist); camera.lookAt(0, 8.6, 0); }
+  new ResizeObserver(size).observe(stage); size();
+  let target = 0, rot = 0, down = null, moved = 0, zoom = 1, zoomT = 1, focusY = 8.6, focusYT = 8.6;
+  const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(), cv = renderer.domElement;
+  cv.style.touchAction = "pan-y";
+  const BACK = new Set(["back","glutes","hamstrings","calves","triceps","lowerback","traps"]);
+  const FOCUS = { chest:12.5, shoulders:13, biceps:11.6, triceps:11.6, forearms:9.5, abs:10.8, obliques:10.6, traps:13.6, back:12, lowerback:10.4, glutes:8.8, quads:6, hamstrings:6, calves:3 };
+  function pick(ev){ const r = cv.getBoundingClientRect(); ptr.set(((ev.clientX-r.left)/r.width)*2-1, -((ev.clientY-r.top)/r.height)*2+1);
+    ray.setFromCamera(ptr, camera); const hit = ray.intersectObject(body, false)[0]; if (!hit) return null;
+    const f = hit.face, gi = [f.a, f.b, f.c].map(i => BODY.grp[i]).find(g => g > 0); return gi ? BODY.groups[gi] : null; }
+  cv.addEventListener("pointerdown", e => { down = { x:e.clientX, y:e.clientY, r:target }; moved = 0; });
+  cv.addEventListener("pointermove", e => { if (!down) return; const dx = e.clientX - down.x; moved = Math.max(moved, Math.abs(dx), Math.abs(e.clientY-down.y)); if (Math.abs(dx) > 4) target = down.r + dx*0.012; });
+  cv.addEventListener("pointerup", e => { if (down && moved < 8){ const g = pick(e); if (g) openGroup(g); else { zoomT = 1; focusYT = 8.6; } } down = null; });
+  cv.addEventListener("pointercancel", () => down = null);
+  const facingBack = () => Math.cos(target) < 0;
+  const flipLbl = () => $("#flipLbl").textContent = facingBack() ? "Front" : "Back";
+  $("#flipBtn").addEventListener("click", () => { target += Math.PI; setTimeout(flipLbl, 50); });
+  mapApi = { select(g){
+    setHighlight(body, g); paintBody(body, P().sex, P().tone, GROUP_HUE[g]);
+    if (BACK.has(g) !== facingBack()) target += Math.PI;
+    zoomT = 1.5; focusYT = FOCUS[g] || 8.6; flipLbl(); },
+    refresh(){ const q = P(); if (body.userData.sex !== q.sex || body.userData.skin !== q.tone){ body.userData.sex = q.sex; body.userData.skin = q.tone; shapeBody(body, { sex:q.sex, muscle:0.88, weight:0.32 }); paintBody(body, q.sex, q.tone, GROUP_HUE[curGroup]); } } };
+  mapApi.select(curGroup);
+  let vis = true; new IntersectionObserver(es => vis = es[0].isIntersecting).observe(stage);
+  (function loop(){
+    requestAnimationFrame(loop);
+    if (!vis || stage.offsetParent === null) return;
+    rot += (target - rot)*0.1; zoom += (zoomT - zoom)*0.08; focusY += (focusYT - focusY)*0.08;
+    grp.rotation.y = rot;
+    const H = 18.2, base = (H/2)/Math.tan(THREE.MathUtils.degToRad(camera.fov/2)) * Math.max(1, 0.58/camera.aspect);
+    camera.position.set(0, focusY + 0.6, base/zoom); camera.lookAt(0, focusY, 0);
+    renderer.render(scene, camera);
+  })();
+}
+
+/* ---------- diet ---------- */
+const MEALS = {
+  Breakfast: [
+    { n:"Greek yogurt, berries & oats", k:420, p:28, d:"veg" },
+    { n:"Veggie egg scramble on wholegrain toast", k:450, p:30, d:"veg" },
+    { n:"Peanut butter banana overnight oats", k:480, p:18, d:"vegan" },
+    { n:"Moong dal chilla with mint curd", k:400, p:24, d:"veg" },
+    { n:"Tofu scramble wrap with spinach", k:430, p:26, d:"vegan" },
+    { n:"Poha with peanuts & sprouts", k:390, p:14, d:"vegan" }
+  ],
+  Lunch: [
+    { n:"Grilled chicken rice bowl with veggies", k:620, p:45, d:"any" },
+    { n:"Paneer tikka with quinoa salad", k:600, p:34, d:"veg" },
+    { n:"Chickpea spinach curry with brown rice", k:580, p:22, d:"vegan" },
+    { n:"Tuna & hummus wholegrain wrap", k:540, p:38, d:"any" },
+    { n:"Dal, 2 rotis & cucumber salad", k:560, p:24, d:"vegan" }
+  ],
+  Snack: [
+    { n:"Apple with 2 tbsp peanut butter", k:270, p:8, d:"vegan" },
+    { n:"Protein shake & a banana", k:280, p:27, d:"veg" },
+    { n:"Roasted chana (chickpeas)", k:200, p:11, d:"vegan" },
+    { n:"Cottage cheese with cucumber", k:180, p:20, d:"veg" },
+    { n:"Boiled eggs & cherry tomatoes", k:190, p:13, d:"veg" }
+  ],
+  Dinner: [
+    { n:"Salmon, sweet potato & greens", k:620, p:42, d:"any" },
+    { n:"Chicken stir-fry with noodles", k:600, p:40, d:"any" },
+    { n:"Tofu & veggie stir-fry with rice", k:560, p:28, d:"vegan" },
+    { n:"Rajma (kidney beans), rice & salad", k:560, p:22, d:"vegan" },
+    { n:"Paneer bhurji with 2 rotis", k:580, p:32, d:"veg" },
+    { n:"Lentil soup with grilled halloumi", k:540, p:33, d:"veg" }
+  ]
+};
+const SHARE = { Breakfast:.25, Lunch:.35, Snack:.1, Dinner:.3 };
+const DIETS = { any:"Everything", veg:"Vegetarian", vegan:"Vegan" };
+const MEAL_ICON = {
+  Breakfast:[`linear-gradient(135deg,#FFC83D,#FF7A2E)`, `<path d="M12 3v2M5.6 5.6l1.4 1.4M3 12h2M19 12h2M17 7l1.4-1.4M7 16a5 5 0 0 1 10 0"/><path d="M3 20h18"/>`],
+  Lunch:[`linear-gradient(135deg,#38F2A8,#22A0C7)`, `<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>`],
+  Snack:[`linear-gradient(135deg,#FF2E7E,#C23BFF)`, `<path d="M12 21c-4 0-7-3.5-7-8 0-3.5 2.5-6 5.5-6 .9 0 1.5.3 1.5.3s.6-.3 1.5-.3c3 0 5.5 2.5 5.5 6 0 4.5-3 8-7 8z"/><path d="M12 7c0-2 1-3.5 3-4"/>`],
+  Dinner:[`linear-gradient(135deg,#7B6CFF,#3E8BFF)`, `<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>`]
+};
+const fitsDiet = (m, d) => d === "any" ? true : d === "veg" ? m.d !== "any" : m.d === "vegan";
+function nutrition(p){
+  const bmr = 10*p.weight + 6.25*p.height - 5*p.age + (p.sex==="male" ? 5 : -161);
+  const tdee = bmr*({sedentary:1.375, light:1.5, active:1.65}[p.activity] + (p.days-3)*0.025);
+  const adj = {lose:-0.2, fit:0, muscle:0.1}[p.goal], kcal = Math.round(tdee*(1+adj)/10)*10;
+  const protein = Math.round(p.weight*{lose:2.0, fit:1.6, muscle:1.8}[p.goal]), fat = Math.round(kcal*0.27/9), carbs = Math.max(0, Math.round((kcal - protein*4 - fat*9)/4));
+  return { bmr:Math.round(bmr), tdee:Math.round(tdee), kcal, protein, fat, carbs, water:+(p.weight*0.035 + p.days*0.08).toFixed(1), adj };
+}
+function renderDiet(){
+  const p = P(), n = nutrition(p), d = p.diet;
+  $("#dietTitle").innerHTML = { lose:`Eat to <span class="grad-text">lose fat</span>`, fit:`Eat to <span class="grad-text">feel strong</span>`, muscle:`Eat to <span class="grad-text">build muscle</span>` }[p.goal];
+  $("#kcalV").textContent = n.kcal.toLocaleString();
+  const parts = [["Protein", n.protein*4, "#FF5B2E"], ["Carbs", n.carbs*4, "#56C8FF"], ["Fat", n.fat*9, "#38F2A8"]];
+  const R = 64, Ci = 2*Math.PI*R; let off = 0;
+  $("#kcalRing").innerHTML = `<circle cx="75" cy="75" r="${R}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="14"/>` + parts.map(([l,k,c]) => { const len = k/n.kcal*Ci - 4;
+    const s = `<circle cx="75" cy="75" r="${R}" fill="none" stroke="${c}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${Math.max(0,len)} ${Ci}" stroke-dashoffset="${-off}" transform="rotate(-90 75 75)"/>`; off += k/n.kcal*Ci; return s; }).join("");
+  $("#macros").innerHTML = [["Protein", n.protein, "#FF5B2E"], ["Carbs", n.carbs, "#56C8FF"], ["Fat", n.fat, "#38F2A8"]].map(([l,g,c]) => `<div class="macro"><span><i style="background:${c}"></i>${l}</span><b>${g}<small> g</small></b></div>`).join("");
+  $("#kcalWhy").textContent = n.adj < 0 ? `About ${Math.round(-n.adj*100)}% below the ${n.tdee.toLocaleString()} kcal you burn daily, so you lose roughly 0.3–0.6 kg a week.`
+    : n.adj > 0 ? `About ${Math.round(n.adj*100)}% above the ${n.tdee.toLocaleString()} kcal you burn, for steady muscle gain with little fat.` : `Matches the ${n.tdee.toLocaleString()} kcal you burn, to keep your weight steady.`;
+  const glasses = Math.round(n.water/0.25), had = Math.min(S.water[today()] || 0, glasses);
+  $("#waterTxt").innerHTML = `<span class="num">${(had*0.25).toFixed(2).replace(/0$/,"")}</span> of ${n.water} L`;
+  $("#water").style.gridTemplateColumns = `repeat(${Math.min(glasses, 12)},1fr)`;
+  $("#water").innerHTML = [...Array(glasses)].map((_,i) => `<button type="button" data-w="${i+1}" aria-label="Glass ${i+1}" aria-pressed="${i < had}"></button>`).join("");
+  $("#dietChips").innerHTML = Object.entries(DIETS).map(([k,v]) => `<button class="chip" type="button" data-diet="${k}" aria-pressed="${k===d}">${v}</button>`).join("");
+  let tk = 0, tp = 0;
+  $("#meals").innerHTML = Object.keys(MEALS).map(slot => {
+    const opts = MEALS[slot].filter(m => fitsDiet(m, d)), m = opts[(S.dietPick[slot+d] || 0) % opts.length];
+    const scale = clamp(n.kcal*SHARE[slot]/m.k, 0.6, 1.8), kc = Math.round(m.k*scale/10)*10, pr = Math.round(m.p*scale); tk += kc; tp += pr;
+    const portion = scale > 1.12 ? `Large portion ×${scale.toFixed(1)}` : scale < 0.88 ? `Small portion ×${scale.toFixed(1)}` : "Regular portion";
+    const [bg, icon] = MEAL_ICON[slot];
+    return `<div class="meal"><span class="t-ico" style="background:${bg}"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icon}</svg></span>
+      <div class="body"><span class="eyebrow">${slot}</span><b>${esc(m.n)}</b><span>${kc} kcal · ${pr} g protein · ${portion}</span></div>
+      <button class="swap" type="button" data-swap="${slot}" aria-label="Swap ${slot}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg></button></div>`;
+  }).join("");
+  $("#mealTotal").textContent = `${tk.toLocaleString()} kcal · ${tp} g protein`;
+  const TIPS = {
+    lose:["Fill half your plate with vegetables. They fill you up for few calories.","Hit your protein target every day so you lose fat, not muscle.","Drinks count: swap sugary drinks and juice for water or tea.","Aim to lose 0.5–1% of body weight a week. Faster usually comes back.","Plan for treats. A small dessert twice a week beats an all-out binge."],
+    fit:["Eat protein at every meal to recover between workouts.","Have carbs 1–2 hours before training for energy.","Eat the rainbow: different coloured veg give different nutrients.","Keep a water bottle in sight. Thirst often feels like hunger.","Mostly whole foods, with room for the foods you love."],
+    muscle:["Spread protein over 3–5 meals of about 25–40 g each.","Eat protein and carbs within 2 hours after training.","Gain slowly: about 0.25–0.5 kg a month keeps fat gain low.","Sleep 7–9 hours. Muscle is built while you recover.","Struggling to eat enough? Add milk, nuts or a smoothie."]
+  };
+  $("#tipsTitle").textContent = { lose:"Tips to lose fat", fit:"Tips to get fit", muscle:"Tips to build muscle" }[p.goal];
+  $("#tips").innerHTML = TIPS[p.goal].map(t => `<li>${esc(t)}</li>`).join("");
+  $("#howTxt").textContent = `Your resting burn (Mifflin-St Jeor formula) is about ${n.bmr.toLocaleString()} kcal. With your activity and ${p.days} workouts a week you burn about ${n.tdee.toLocaleString()} kcal a day. Protein is set at ${({lose:2.0, fit:1.6, muscle:1.8})[p.goal]} g per kg of body weight, fat at about 27% of calories, and the rest is carbs. Treat these as a starting point (±10%) and adjust after 2–3 weeks based on how your weight moves.`;
+}
+$("#water").addEventListener("click", e => { const b = e.target.closest("[data-w]"); if (!b) return; const v = +b.dataset.w, cur = S.water[today()] || 0;
+  S.water = { [today()]: cur === v ? v-1 : v }; save(); renderDiet(); });
+$("#dietChips").addEventListener("click", e => { const b = e.target.closest("[data-diet]"); if (!b) return;
+  if (S.profile) S.profile.diet = b.dataset.diet; else EXAMPLE.diet = b.dataset.diet; save(); renderDiet(); });
+$("#meals").addEventListener("click", e => { const b = e.target.closest("[data-swap]"); if (!b) return; const k = b.dataset.swap + P().diet; S.dietPick[k] = (S.dietPick[k]||0)+1; save(); renderDiet(); });
+$("#newMealsBtn").addEventListener("click", () => { Object.keys(MEALS).forEach(s => { const k = s+P().diet; S.dietPick[k] = (S.dietPick[k]||0) + 1 + Math.floor(Math.random()*3); }); save(); renderDiet(); });
+
+/* ---------- coach ---------- */
+const SUGGEST = ["Make me a 20-minute home workout","How do I lose belly fat?","I'm sore. Should I still train?","What should I eat before a workout?","I keep skipping workouts. Help!"];
+const OFFLINE = [
+  [/sleep|rest day|recover/i, "Recovery is where you get stronger.\n- Sleep 7–9 hours; keep a regular bedtime.\n- Take 1–2 rest days a week, or do light walking or stretching.\n- Don't train the same muscle hard two days in a row."],
+  [/cardio|run|walk|steps/i, "Mix both: strength 2–4 days a week keeps muscle, cardio helps your heart and burns extra calories.\n- Aim for 7,000–10,000 steps a day.\n- Add 2–3 sessions of 20–30 min brisk cardio.\n- Do weights first if you do both in one session."],
+  [/how much protein|protein/i, "Aim for about 1.6–2.2 g of protein per kg of body weight a day. Your exact target is on the Diet tab. Spread it over 3–5 meals: eggs, paneer, Greek yogurt, chicken, fish, tofu, dal and chickpeas all help."],
+  [/water|hydrat|drink/i, "Drink about 35 ml per kg of body weight a day, plus a little more on training days. Track it with the water glasses on the Diet tab. Pale yellow urine is a good sign you're drinking enough."],
+  [/warm|stretch/i, "Warm up for 5 minutes before training:\n- 1 min marching or jumping jacks\n- 10 arm circles each way\n- 10 bodyweight squats\n- 10 hip hinges\nStretch gently after your workout, holding each stretch 20–30 seconds."],
+  [/plateau|stuck|not losing|stopped/i, "Plateaus are normal.\n- Weigh yourself daily and look at the weekly average.\n- Check portions: small extras add up.\n- Add 2,000 daily steps or one more workout.\n- Give each change 2 weeks before judging it."],
+  [/knee|back|shoulder|injur/i, "If something hurts in a joint, stop that exercise. Try a gentler swap (for example glute bridges instead of squats for sore knees) and see a doctor or physio if pain lasts more than a few days or is sharp."],
+  [/beginner|start|new to/i, "Welcome! Start with 3 short workouts a week from your daily plan, using the easier versions of each move. Focus on good form, not speed. After 2–3 weeks, add a set or a few reps."],
+  [/belly|stomach|tummy/i, "You can't burn fat from one spot, but belly fat does shrink as your overall body fat drops.\n- Stay in the calorie target on the Diet tab.\n- Train 3+ days a week, mixing strength and cardio.\n- Sleep 7–9 hours and keep stress in check.\nMost people see their waist shrink within 4–8 weeks."],
+  [/sore|pain|hurt/i, "Normal muscle soreness (a dull ache 1–2 days after training) is fine. Do light movement or train a different body part. Sharp pain, swelling or pain in a joint is different: rest it and see a doctor or physio."],
+  [/eat|food|meal|protein|diet/i, "Before a workout, have something with carbs and a little protein 1–2 hours before: a banana with yogurt, or toast with peanut butter. After, aim for 25–40 g of protein. Your daily targets are on the Diet tab."],
+  [/skip|motivat|lazy|tired|consisten/i, "Make it tiny: commit to just 10 minutes. Most days you'll keep going once you start.\n- Pick fixed days and times, like meetings.\n- Lay out your clothes the night before.\n- Protect your streak, but if you miss a day, never miss two."],
+  [/workout|routine|plan|home|minute/i, "Quick 20-minute home circuit, 3 rounds:\n- 12 bodyweight squats\n- 8–10 push-ups (knees are fine)\n- 10 glute bridges\n- 30 s plank\n- 30 s jumping jacks\nRest 1 minute between rounds."]
+];
+const chatEl = $("#chat");
+function bubble(role, text, cls){ const d = document.createElement("div"); d.className = `msg ${role}${cls?" "+cls:""}`; d.textContent = text; chatEl.appendChild(d); return d; }
+function renderChat(){
+  chatEl.innerHTML = "";
+  bubble("ai", `Hey${S.profile && S.profile.name ? " "+S.profile.name : ""}! I'm your FitMirror coach. Ask me about workouts, food, or staying on track.`);
+  S.chat.forEach(m => bubble(m.role === "user" ? "me" : "ai", m.content));
+  $("#suggest").innerHTML = SUGGEST.map(s => `<button class="chip" type="button">${esc(s)}</button>`).join("");
+}
+let samplePromise = null;
+const getSample = () => samplePromise || (samplePromise = (async () => { try { return window.claude && window.claude.use ? await window.claude.use("sample") : null; } catch { return null; } })());
+let aiOff = false, busy = false;
+function rules(){
+  const p = P(), n = nutrition(p), plan = todaysPlan();
+  return `You are FitMirror Coach, a friendly, upbeat personal trainer and nutrition coach inside a mobile fitness app. Reply in plain text (no markdown headings or bold), under 120 words unless the user asks for more; use short "- " bullet lines for lists. Personalize using the profile. Favor consistency over perfection and give concrete next steps. Never diagnose; for pain, injury, dizziness, chest pain, pregnancy, eating disorders or medical conditions, tell them to see a doctor or physio. Stay on fitness, nutrition, sleep and motivation.
+
+User profile: ${p.sex}, age ${p.age}, ${p.height} cm, ${p.weight} kg, activity ${p.activity}, goal ${({lose:"lose fat",fit:"get fit",muscle:"build muscle"})[p.goal]}, trains ${p.days} days/week, equipment: ${EQUIP[p.equip]}, diet: ${DIETS[p.diet]}.
+Targets: ${n.kcal} kcal/day, protein ${n.protein} g, carbs ${n.carbs} g, fat ${n.fat} g.
+Today's workout: ${plan.title} (${plan.ids.map(id => (EX.find(e=>e.id===id)||{}).name).join(", ")}). Current streak: ${streak()} days. Workouts logged: ${S.history.length}.`;
+}
+async function ask(q){
+  q = q.trim(); if (!q || busy) return;
+  busy = true; $("#sendBtn").disabled = true; $("#ask").value = "";
+  bubble("me", q); S.chat.push({ role:"user", content:q });
+  const out = bubble("ai", "Thinking…", "thinking"); out.scrollIntoView({ block:"nearest" });
+  const sample = aiOff ? null : await getSample();
+  let answer = null;
+  if (sample){
+    try {
+      const turns = S.chat.slice(-12); while (turns.length && turns[0].role !== "user") turns.shift();
+      const res = await sample([{ role:"user", content: rules() }, ...turns], { cache:false, modelTier:"quick", onText: ({text}) => { out.classList.remove("thinking"); out.textContent = text; } });
+      answer = res.text;
+    } catch (e) {
+      if (["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(e.code)) aiOff = true;
+      if (e.code === "rate_limited") $("#coachNote").textContent = "The AI coach is busy. Try again in a minute.";
+      else if (e.text) answer = e.text;
+    }
+  }
+  if (!answer){
+    const hit = OFFLINE.find(([re]) => re.test(q));
+    answer = hit ? hit[1] : "Good question! I can answer questions about workouts, food, protein, water, sleep, cardio, soreness, plateaus and motivation. Try asking about one of those, or tap a suggestion above.";
+    out.classList.remove("thinking"); out.textContent = answer;
+    $("#coachNote").textContent = "Coach answers come from FitMirror's built-in guide.";
+  }
+  S.chat.push({ role:"assistant", content:answer }); S.chat = S.chat.slice(-30); save();
+  busy = false; $("#sendBtn").disabled = false;
+}
+$("#composer").addEventListener("submit", e => { e.preventDefault(); ask($("#ask").value); });
+$("#suggest").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) ask(b.textContent); });
+
+/* ---------- profile sheet ---------- */
+function openSheet(){
+  const p = Object.assign({}, P(), S.profile ? {} : { name:"" });
+  let step = 0;
+  const scrim = document.createElement("div"); scrim.className = "scrim";
+  const opts = (key, list) => `<div class="opts" data-seg="${key}">${list.map(([v,l]) => `<button type="button" data-v="${v}" aria-pressed="${String(p[key])===String(v)}">${l}</button>`).join("")}</div>`;
+  const steps = [
+    () => `<div><span class="eyebrow">Step 1 of 3</span><h1 style="margin-top:6px;font-size:28px">Let's build <span class="grad-text">your body</span></h1><p class="small muted" style="margin-top:6px">Used to shape your 3D mirror. Stays on this device.</p></div>
+      <div class="field"><label for="f-name">First name</label><input id="f-name" value="${esc(p.name||"")}" maxlength="20" placeholder="Optional"></div>
+      <div class="field"><span class="lbl">Body</span>${opts("sex",[["female","Female"],["male","Male"]])}</div>
+      <div class="field"><span class="lbl">Skin tone</span><div class="tones" data-seg="tone">${TONES.map((c,i) => `<button type="button" data-v="${i}" aria-label="Tone ${i+1}" aria-pressed="${p.tone===i}" style="background:${c}"></button>`).join("")}</div></div>
+      <div class="grid2"><div class="field"><label for="f-age">Age</label><input id="f-age" type="number" inputmode="numeric" min="14" max="90" value="${p.age}"></div>
+      <div class="field"><label for="f-h">Height (cm)</label><input id="f-h" type="number" inputmode="numeric" min="120" max="230" value="${p.height}"></div></div>
+      <div class="field"><label for="f-w">Weight (kg)</label><input id="f-w" type="number" inputmode="decimal" min="35" max="250" step="0.1" value="${p.weight}"></div>`,
+    () => `<div><span class="eyebrow">Step 2 of 3</span><h1 style="margin-top:6px;font-size:28px">What's your <span class="grad-text">goal?</span></h1></div>
+      <div class="field"><span class="lbl">Main goal</span>${opts("goal",[["lose","Lose fat"],["fit","Get fit"],["muscle","Build muscle"]])}</div>
+      <div class="field"><span class="lbl">How active are you today?</span>${opts("activity",[["sedentary","Mostly sitting"],["light","Some walking"],["active","Very active"]])}</div>
+      <div class="field"><span class="lbl">Workouts per week you'll aim for</span>${opts("days",[[2,"2"],[3,"3"],[4,"4"],[5,"5"],[6,"6"]])}</div>`,
+    () => `<div><span class="eyebrow">Step 3 of 3</span><h1 style="margin-top:6px;font-size:28px">Your <span class="grad-text">setup</span></h1></div>
+      <div class="field"><span class="lbl">Equipment you have</span>${opts("equip",[["none","None"],["dumbbell","Dumbbells"],["gym","Gym"]])}</div>
+      <div class="field"><span class="lbl">How you eat</span>${opts("diet",[["any","Everything"],["veg","Vegetarian"],["vegan","Vegan"]])}</div>
+      ${S.profile ? `<button type="button" class="linkbtn" id="resetBtn" style="align-self:flex-start;color:var(--ember)">Reset all my data</button>` : ""}`
+  ];
+  function read(){
+    const v = id => { const el = scrim.querySelector(id); return el ? el.value : null; };
+    if (v("#f-name") !== null) p.name = v("#f-name").trim();
+    if (v("#f-age") !== null) p.age = clamp(+v("#f-age") || 30, 14, 90);
+    if (v("#f-h") !== null) p.height = clamp(+v("#f-h") || 170, 120, 230);
+    if (v("#f-w") !== null) p.weight = clamp(+v("#f-w") || 70, 35, 250);
+  }
+  function draw(){
+    scrim.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="Your profile"><div class="grab"></div>
+      <div class="steps">${steps.map((_,i) => `<i class="${i<=step?"on":""}"></i>`).join("")}</div>${steps[step]()}
+      <div class="row" style="gap:8px;margin-top:4px"><button class="btn ghost" type="button" data-act="back" style="flex:1">${step ? "Back" : "Cancel"}</button>
+      <button class="btn" type="button" data-act="next" style="flex:2">${step < steps.length-1 ? "Continue" : "See my future body"}</button></div></div>`;
+  }
+  scrim.addEventListener("click", e => {
+    if (e.target === scrim) { scrim.remove(); return; }
+    const sb = e.target.closest("[data-seg] button");
+    if (sb){ read(); const key = sb.parentElement.dataset.seg; p[key] = (key === "days" || key === "tone") ? +sb.dataset.v : sb.dataset.v; draw(); return; }
+    if (e.target.id === "resetBtn"){ if (e.target.dataset.sure){ try { localStorage.removeItem(KEY); } catch {} Object.assign(S, { profile:null, history:[], plans:{}, explored:[], dietPick:{}, chat:[], water:{} }); scrim.remove(); viewDays = P().days; refreshAll(); toast("All data cleared"); } else { e.target.dataset.sure = "1"; e.target.textContent = "Tap again to confirm reset"; } return; }
+    const act = e.target.closest("[data-act]"); if (!act) return;
+    read();
+    if (act.dataset.act === "back"){ if (!step) scrim.remove(); else { step--; draw(); } }
+    else if (step < steps.length-1){ step++; draw(); }
+    else { S.profile = p; S.plans = {}; save(); viewDays = p.days; scrim.remove(); refreshAll(); go("home"); toast("Meet your future self"); }
+  });
+  draw(); document.body.appendChild(scrim);
+}
+$("#meBtn").addEventListener("click", openSheet);
+$("#setupBtn").addEventListener("click", openSheet);
+
+/* ---------- toast & confetti ---------- */
+let toastT;
+function toast(msg){ let t = $(".toast"); if (!t){ t = document.createElement("div"); t.className = "toast"; t.setAttribute("role","status"); document.body.appendChild(t); }
+  t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+function confetti(){
+  if (reduceMotion) return;
+  const c = $("#confetti"), ctx = c.getContext("2d"); c.hidden = false;
+  c.width = innerWidth*devicePixelRatio; c.height = innerHeight*devicePixelRatio; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  const cols = ["#FF5B2E","#FF2E7E","#56C8FF","#38F2A8","#FFC83D","#7B6CFF"];
+  const parts = [...Array(140)].map(() => ({ x:innerWidth/2, y:innerHeight*0.55, vx:(Math.random()-0.5)*14, vy:-Math.random()*15-4, r:Math.random()*7+3, c:cols[Math.floor(Math.random()*cols.length)], a:Math.random()*6 }));
+  let f = 0;
+  (function tick(){ ctx.clearRect(0,0,innerWidth,innerHeight);
+    parts.forEach(p => { p.vy += 0.4; p.x += p.vx; p.y += p.vy; p.a += 0.2; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); ctx.restore(); });
+    if (++f < 120) requestAnimationFrame(tick); else c.hidden = true; })();
+}
+
+/* ---------- routing ---------- */
+let mapStarted = false, mirrorStarted = false;
+function go(name){
+  document.querySelectorAll("[data-screen]").forEach(s => s.hidden = s.id !== "scr-" + name);
+  document.querySelectorAll(".tab").forEach(t => t.dataset.tab === name ? t.setAttribute("aria-current","page") : t.removeAttribute("aria-current"));
+  if (name === "home" && !mirrorStarted){ mirrorStarted = true; requestAnimationFrame(initMirror); }
+  if (name === "map"){ if (!mapStarted){ mapStarted = true; requestAnimationFrame(initMap); } else if (mapApi) mapApi.refresh(); }
+  if (name === "diet") renderDiet();
+  window.scrollTo(0, 0); requestAnimationFrame(() => window.scrollTo(0, 0));
+  try { history.replaceState(null, "", "#" + name); } catch {}
+}
+document.querySelector(".tabbar").addEventListener("click", e => { const t = e.target.closest("[data-tab]"); if (t) go(t.dataset.tab); });
+function refreshAll(){ renderHome(); renderDiet(); renderGroupChips(); renderExList(); renderChat(); if (mapApi) mapApi.refresh(); }
+refreshAll();
+const start = (location.hash || "").slice(1);
+go(["home","map","diet","coach"].includes(start) ? start : "home");
+if (!mirrorStarted) { mirrorStarted = true; requestAnimationFrame(initMirror); }
+loadBody().catch(() => {});
+})();
+</script>
+</body></html>
